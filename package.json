@@ -1,0 +1,24 @@
+{
+  "name": "nexus",
+  "version": "0.0.1",
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc",
+    "run": "electron build/main.js",
+    "clean": "rm -rf build/*",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Noah Van Miert",
+  "license": "MIT",
+  "description": "A simple webbrowser made for learning purposes.",
+  "dependencies": {
+    "electron": "^30.0.1",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/electron": "^1.6.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
