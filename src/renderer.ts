@@ -4,6 +4,9 @@
 // ====================================
 
 
+const defaultStartpage: string = 'https://google.com';
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
@@ -54,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
         webview.setAttribute('src', url);
         webviewContainer.appendChild(webview);
     }
+
+    // Load default start page
+    createWebview(defaultStartpage);
 
     // Check if a given text has a valid domain and no spaces (e.g. google.com, youtube.com, ...)
     const hasValidDomain = (text: string) => {

@@ -4,7 +4,7 @@
 // ====================================
 
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import Main from './electron-main';
 
-Main.main(app, BrowserWindow);
+Main.main(app, BrowserWindow, Menu);

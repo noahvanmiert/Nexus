@@ -3,15 +3,13 @@
 //  27/04/2024  
 // ====================================
 
-
-import { BrowserWindow } from 'electron';
 import * as path from 'path';
-
+import getTemplate from './menu';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
     static application: Electron.App;
-    static BrowserWindow;
+    static BrowserWindow: typeof Electron.BrowserWindow;
     
     private static onWindowAllClosed() {
         if (process.platform !== 'darwin') {
@@ -40,11 +38,19 @@ export default class Main {
         Main.mainWindow.on('closed', Main.onClose);
     }
 
-    static main(app: Electron.App, browserWindow: typeof Electron.BrowserWindow) {
-        Main.BrowserWindow = browserWindow;
+    static main(app: Electron.App, browserWindow: typeof Electron.BrowserWindow, Menu) {
         Main.application = app;
+        Main.BrowserWindow = browserWindow;
         
+        // Set the name of the whole application to Nexus (instead of default Electron)
+        Main.application.setName('Nexus');
+        const appName = Main.application.getName();
+
         Main.application.on('window-all-closed', Main.onWindowAllClosed);
         Main.application.on('ready', Main.onReady);
+
+        // Set the menu bar items (see src/menu.ts)
+        let menu = Menu.buildFromTemplate(getTemplate(appName));
+        Menu.setApplicationMenu(menu);
     }
 }
