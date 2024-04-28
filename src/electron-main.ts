@@ -11,7 +11,7 @@ import * as path from 'path';
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
     static application: Electron.App;
-    static BrowserWindow: typeof Electron.BrowserWindow;
+    static BrowserWindow;
     
     private static onWindowAllClosed() {
         if (process.platform !== 'darwin') {
@@ -25,19 +25,22 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({ width: 800, height: 600 });
+        Main.mainWindow = new Main.BrowserWindow({
+            width: 1280,
+            height: 720,
+            webPreferences: {
+                nodeIntegration: true,
+                webviewTag: true,
+            }
+        });
         
         Main.mainWindow.loadFile(
-            path.join(path.join(Main.application.getAppPath(), '..'), 'src/index.html'));
+            path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html'));
         
         Main.mainWindow.on('closed', Main.onClose);
     }
 
-    static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
-        // we pass the Electron.App object and the  
-        // Electron.BrowserWindow into this function 
-        // so this class has no dependencies. This 
-        // makes the code easier to write tests for 
+    static main(app: Electron.App, browserWindow: typeof Electron.BrowserWindow) {
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         
