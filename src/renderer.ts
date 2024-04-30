@@ -186,18 +186,48 @@ document.addEventListener('DOMContentLoaded', () => {
         return hasValidDomain(url);
     }
 
+    function updateTabStyles() {
+        tabManager.getTabs().forEach(tab => {
+            const tabElement = document.getElementById(tab.id.toString());
+
+            if (tabElement) {
+                if (tab.active) {
+                    tabElement.classList.add('active');
+                } else {
+                    tabElement.classList.remove('active');
+                }
+            }
+        })
+    }
+
+    function handleTabSelect(event: MouseEvent) {
+        const tabElement = event.currentTarget as HTMLElement;
+        const tabId = parseInt(tabElement.id);
+
+        const clickedTab = tabManager.getTabs().find(tab => tab.id === tabId);
+
+        if (clickedTab) {
+            tabManager.activateTab(clickedTab);
+            updateTabStyles();
+        }
+    }
+
     function newTab(title: string, url: string) {
         let tabId = iota();
 
         const newTab = document.createElement('div');
         newTab.setAttribute('class', 'tab');
         newTab.setAttribute('id', tabId.toString());
+        newTab.addEventListener('click', handleTabSelect);
+
         newTab.textContent = title;
 
         tabBar.appendChild(newTab);
 
         let t = tabManager.addTab(title, url, tabId)
         tabManager.activateTab(t);
+
+        updateTabStyles();
     }
 
     const closeCurrentTab = () => {
@@ -218,5 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Close the tab in the TabManager
             tabManager.closeTab(activeTab.id);
         }
+
+        updateTabStyles();
     }
 });
