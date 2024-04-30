@@ -2,7 +2,7 @@
 //  Copyright (C) Nova Industries
 //  27/04/2024  
 // ====================================
-
+import {BrowserWindow, ipcMain} from 'electron';
 
 const getTemplate = (appName: string) => {
     return [
@@ -20,6 +20,10 @@ const getTemplate = (appName: string) => {
                     label: 'Services',
                     role: 'services',
                     submenu: []
+                },
+                {
+                    label: 'Dev Tools',
+                    role: 'toggledevtools'
                 },
                 {
                     type: 'separator'
@@ -40,8 +44,29 @@ const getTemplate = (appName: string) => {
                     role: 'quit'
                 }
             ]
+
+        },
+        {
+            label: 'File',
+            submenu: [
+                {
+                    label: 'New Tab',
+                    accelerator: 'CmdOrCtrl+T',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('new-tab');
+                    }
+                },
+                {
+                    label: 'Close Tab',
+                    accelerator: 'CmdOrCtrl+W',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('close-tab');
+                    }
+                }
+            ]
         }
-        
     ]
     
 }

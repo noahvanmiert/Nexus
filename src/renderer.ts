@@ -3,18 +3,113 @@
 //  27/04/2024  
 // ====================================
 
-
 const defaultStartpage: string = 'https://google.com';
+
+class Tab {
+
+    constructor(public title: string, public url: string, public id: number, public active: boolean = false)
+    {
+    }
+
+    activate() {
+        this.active = true;
+    }
+
+    deactivate() {
+        this.active = false;
+    }
+
+}
+
+class TabManager {
+    private tabs: Tab[] = [];
+
+    addTab(title: string, url: string, id: number): Tab {
+        const tab = new Tab(title, url, id);
+        this.tabs.push(tab);
+
+        return tab;
+    }
+
+    closeTab(id: number) {
+        // There needs to always be at least one tab open.
+        if (this.tabs.length === 1) {
+            return;
+        }
+
+        // find if the tab with id is at index zero or not and do different things then
+        const index = this.tabs.findIndex(tab => tab.id === id);
+
+        // Check if the tab to be closed is the first tab
+        if (index === 0) {
+        // If it's the first tab, activate the next tab (if exists)
+            if (this.tabs.length > 1) {
+                this.activateTab(this.tabs[1]);
+            }
+        } else {
+            this.activateTab(this.tabs[index - 1]);
+        }
+
+        this.tabs = this.tabs.filter(tab => tab.id !== id);
+    }
+
+    getTabs(): Tab[] {
+        return this.tabs;
+    }
+
+    getActive(): Tab {
+        for (const tab of this.tabs) {
+            if (tab.active) {
+                return tab;
+            }
+        }
+
+        return null;
+    }
+
+    activateTab(tab: Tab) {
+        tab.activate();
+
+        this.tabs.forEach((t) => {
+            if (t !== tab) {
+                t.deactivate();
+            }
+        })
+    }
+}
+
+let iotaCounter = 0;
+
+const iota = (): number => {
+    let result = iotaCounter;
+    iotaCounter++;
+    return result;
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const tabBar = document.getElementById('tab-bar');
+
+    const tabManager = new TabManager();
+    tabManager.addTab('Google', 'https://google.com', 0);
+    newTab('Google', 'https://google.com');
 
     searchInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             handleSearch();
         }
     });
+
+    // @ts-ignore
+    electronAPI.onNewTab((value) => {
+        newTab('Google', 'https://google.com');
+    })
+
+    // @ts-ignore
+    electronAPI.onCloseTab((value) => {
+        closeCurrentTab();
+    })
 
     const handleSearch = () => {
         const searchTerm: string = searchInput.value.trim();
@@ -88,5 +183,38 @@ document.addEventListener('DOMContentLoaded', () => {
         // Returns true if the url has a valid domain an no spaces (so it is a url without protocol)
         // else it will return false because it is a search term.
         return hasValidDomain(url);
+    }
+
+    function newTab(title: string, url: string) {
+        let tabId = iota();
+
+        const newTab = document.createElement('div');
+        newTab.setAttribute('class', 'tab');
+        newTab.setAttribute('id', tabId.toString());
+        newTab.textContent = title;
+
+        tabBar.appendChild(newTab);
+
+        let t = tabManager.addTab(title, url, tabId)
+        tabManager.activateTab(t);
+        console.log('new: ' + tabId.toString())
+    }
+
+    const closeCurrentTab = () => {
+        const activeTab = tabManager.getActive();
+
+        console.log(activeTab)
+
+        if (activeTab) {
+            // Remove tab from the tab bar
+            console.log(activeTab.id.toString())
+            const tabElement = document.getElementById(activeTab.id.toString());
+            if (tabElement) {
+                tabElement.remove();
+            }
+
+            // Close the tab in the TabManager
+            tabManager.closeTab(activeTab.id);
+        }
     }
 });

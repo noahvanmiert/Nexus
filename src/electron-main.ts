@@ -23,12 +23,16 @@ export default class Main {
     }
 
     private static onReady() {
+        console.log(path.join(__dirname, 'preload.js'))
+
         Main.mainWindow = new Main.BrowserWindow({
             width: 1280,
             height: 720,
             webPreferences: {
                 nodeIntegration: true,
                 webviewTag: true,
+                devTools: true,
+                preload: path.join(__dirname, 'preload.js')
             }
         });
         
