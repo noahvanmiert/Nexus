@@ -92,8 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBar = document.getElementById('tab-bar');
 
     const tabManager = new TabManager();
-    tabManager.addTab('Google', 'https://google.com', 0);
     newTab('Google', 'https://google.com');
+
+    console.log(tabManager.getTabs())
 
     searchInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
@@ -197,17 +198,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let t = tabManager.addTab(title, url, tabId)
         tabManager.activateTab(t);
-        console.log('new: ' + tabId.toString())
     }
 
     const closeCurrentTab = () => {
         const activeTab = tabManager.getActive();
 
-        console.log(activeTab)
+        // If there is only one tab open
+        if (tabManager.getTabs().length === 1) {
+            return;
+        }
 
         if (activeTab) {
             // Remove tab from the tab bar
-            console.log(activeTab.id.toString())
             const tabElement = document.getElementById(activeTab.id.toString());
             if (tabElement) {
                 tabElement.remove();
