@@ -3,12 +3,21 @@
 //  27/04/2024  
 // ====================================
 
-const defaultStartpage: string = 'https://google.com';
+const defaultStartpage: string = 'https://www.google.com';
+
+class WebviewState {
+
+    constructor(public url: string, public scrollY: number) {
+
+    }
+
+}
 
 class Tab {
+    webviewState: WebviewState;
 
-    constructor(public title: string, public url: string, public id: number, public active: boolean = false)
-    {
+    constructor(public title: string, public url: string, public id: number, public active: boolean = false) {
+        this.webviewState = new WebviewState(url, 0);
     }
 
     activate() {
@@ -23,6 +32,11 @@ class Tab {
 
 class TabManager {
     private tabs: Tab[] = [];
+    private webViewContainer: HTMLElement;
+
+    constructor(webviewContainer: HTMLElement) {
+        this.webViewContainer = webviewContainer;
+    }
 
     addTab(title: string, url: string, id: number): Tab {
         const tab = new Tab(title, url, id);
@@ -70,11 +84,29 @@ class TabManager {
     activateTab(tab: Tab) {
         tab.activate();
 
+        // Update the content of the webview based on the selected tab's state
+        const webview = this.webViewContainer.querySelector('webview');
+        if (webview) {
+            webview.setAttribute('src', tab.webviewState.url);
+        }
+
         this.tabs.forEach((t) => {
             if (t !== tab) {
                 t.deactivate();
             }
         })
+    }
+
+    setActiveURL(url: string) {
+        this.getActive().webviewState.url = url;
+    }
+
+    setActiveTitle(title: string) {
+        this.getActive().title = title;
+    }
+
+    saveWebviewState(url: string, scrollY: number) {
+        this.getActive().webviewState = new WebviewState(url, scrollY);
     }
 }
 
@@ -91,8 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
     const tabBar = document.getElementById('tab-bar');
 
-    const tabManager = new TabManager();
-    newTab('Google', 'https://google.com');
+    const tabManager = new TabManager(document.getElementById('webview-container'));
+    newTab('Google', 'https://www.google.com');
 
     console.log(tabManager.getTabs())
 
@@ -122,10 +154,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // if the protocol isn't added but the address is valid, add the protocol
                 if (hasValidDomain(searchTerm)) {
-                    createWebview('https://' + searchTerm);
+                    createWebview('https://www.' + searchTerm);
                     
                     // change the search input to the whole url with protocol
-                    searchInput.value = 'https://' + searchTerm;
+                    searchInput.value = 'https://www.' + searchTerm;
+                    tabManager.setActiveURL('https://www.' + searchTerm);
                     
                     return;
                 }
@@ -151,11 +184,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Create new webview element
         const webview = document.createElement('webview');
         webview.setAttribute('src', url);
+
+        webview.addEventListener('dom-ready', () => {
+            // Access the title of the webview
+            const title = webview.getTitle();
+            tabManager.setActiveTitle(title);
+
+            // change the title in the tab element itself
+            document.getElementById(tabManager.getActive().id.toString()).textContent = title;
+        });
+
+        webview.addEventListener('did-navigate-in-page', (event) => {
+            // Log the URL of the page where the navigation occurred
+            tabManager.setActiveURL(event.url);
+
+            searchInput.value = event.url;
+        });
+
         webviewContainer.appendChild(webview);
     }
-
-    // Load default start page
-    createWebview(defaultStartpage);
 
     // Check if a given text has a valid domain and no spaces (e.g. google.com, youtube.com, ...)
     const hasValidDomain = (text: string) => {
@@ -207,8 +254,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const clickedTab = tabManager.getTabs().find(tab => tab.id === tabId);
 
         if (clickedTab) {
-            tabManager.activateTab(clickedTab);
+            if (!clickedTab.active) {
+                tabManager.activateTab(clickedTab);
+            }
+
+            // change the color of the tab
             updateTabStyles();
+
+            // change the url in the search bar
+            searchInput.value = tabManager.getActive().webviewState.url;
         }
     }
 
