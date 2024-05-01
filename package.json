@@ -14,6 +14,7 @@
   "license": "MIT",
   "description": "A simple webbrowser made for learning purposes.",
   "dependencies": {
+    "bootstrap-icons": "^1.11.3",
     "electron": "^30.0.1",
     "react": "^18.3.1"
   },
