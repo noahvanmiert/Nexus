@@ -11,5 +11,9 @@
         "noImplicitAny": false,
         "outDir": "./build/"
     },
+    "include": [
+        "src/*.ts",
+        "src/front-end/*.ts"
+    ],
     "exclude": [ "node_modules" ] 
 }

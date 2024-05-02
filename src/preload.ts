@@ -1,6 +1,24 @@
-const { ipcRenderer, contextBridge } = require('electron');
+// ====================================
+//  Project: Nexus Browser
+//  Author: Noah Van Miert
+//  Date: 27/04/2024
+//  Description: Electron preload script
+//
+//  Licensed under the MIT License.
+//  For details, see the full license text.
+//  https://opensource.org/licenses/MIT
+// ====================================
+
+
+import { ipcRenderer, contextBridge } from 'electron';
+
 
 contextBridge.exposeInMainWorld("electronAPI", {
-    onNewTab: (callback) => ipcRenderer.on('new-tab', (_event, value) => callback(value)),
-    onCloseTab: (callback) => ipcRenderer.on('close-tab', (_event, value) => callback(value))
+    onNewTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('new-tab', callback);
+    },
+
+    onCloseTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('close-tab', callback);
+    }
 });

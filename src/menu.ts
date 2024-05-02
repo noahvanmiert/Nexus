@@ -1,8 +1,17 @@
 // ====================================
-//  Copyright (C) Nova Industries
-//  27/04/2024  
+//  Project: Nexus Browser
+//  Author: Noah Van Miert
+//  Date: 27/04/2024
+//  Description: Electron Menu
+//
+//  Licensed under the MIT License.
+//  For details, see the full license text.
+//  https://opensource.org/licenses/MIT
 // ====================================
-import {BrowserWindow, ipcMain} from 'electron';
+
+
+import { BrowserWindow } from 'electron';
+
 
 const getTemplate = (appName: string) => {
     return [

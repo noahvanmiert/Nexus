@@ -1,7 +1,14 @@
 // ====================================
-//  Copyright (C) Nova Industries
-//  27/04/2024  
+//  Project: Nexus Browser
+//  Author: Noah Van Miert
+//  Date: 27/04/2024
+//  Description: All Electron specific code
+//
+//  Licensed under the MIT License.
+//  For details, see the full license text.
+//  https://opensource.org/licenses/MIT
 // ====================================
+
 
 import * as path from 'path';
 import getTemplate from './menu';
@@ -11,20 +18,19 @@ export default class Main {
     static application: Electron.App;
     static BrowserWindow: typeof Electron.BrowserWindow;
     
-    private static onWindowAllClosed() {
+
+    private static onWindowAllClosed(): void {
         if (process.platform !== 'darwin') {
             Main.application.quit();
         }
     }
 
-    private static onClose() {
-        // Dereference the window object. 
+    private static onClose(): void {
         Main.mainWindow = null;
     }
 
-    private static onReady() {
-        console.log(path.join(__dirname, 'preload.js'))
 
+    private static onReady(): void {
         Main.mainWindow = new Main.BrowserWindow({
             width: 1280,
             height: 720,
@@ -42,7 +48,8 @@ export default class Main {
         Main.mainWindow.on('closed', Main.onClose);
     }
 
-    static main(app: Electron.App, browserWindow: typeof Electron.BrowserWindow, Menu) {
+
+    static main(app: Electron.App, browserWindow: typeof Electron.BrowserWindow, Menu): void {
         Main.application = app;
         Main.BrowserWindow = browserWindow;
         
