@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tabManager = new TabManager(webviewContainer);
     newTab('Google', Defaults.homePage);
-    createWebview(Defaults.homePage);
 
     
     searchInput.addEventListener('keydown', (event) => {
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     // @ts-ignore
-    
     electronAPI.onNewTab(() => {
         newTab('Google', Defaults.homePage);
     })
@@ -61,26 +59,25 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create webview and set active url
             searchInput.value = url;
             tabManager.setActiveURL(url);
-            createWebview(url);
+            tabManager.setActiveWebviewURL(url);
         } else {
             // Treat it as a search term and search using Google
             const searchURL = `https://google.com/search?q=${encodeURIComponent(searchTerm)}`;
-            createWebview(searchURL);
+            tabManager.setActiveWebviewURL(searchURL);
         }
     }
     
 
     // Function to create and load a webview
-    function createWebview(url: string): void {
-        // Remove existing webview element if it exists
-        const existingWebview = document.querySelector('webview');
-        if (existingWebview) {
-            existingWebview.remove();
-        }
+    function createWebview(url: string, id: number): void {
 
         // Create new webview element
         const webview = document.createElement('webview');
         webview.setAttribute('src', url);
+        webview.setAttribute('id', `webview-${id}`);
+
+        // Set additional CSS styles
+        webview.setAttribute('style', 'width: 100%; height: 100%;');
 
         webview.addEventListener('dom-ready', () => {
             let title: string;
@@ -150,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let t = tabManager.addTab(title, url, tabId);
         tabManager.activateTab(t);
         updateTabStyles();
+
+        createWebview(url, tabId);
     }
     
 

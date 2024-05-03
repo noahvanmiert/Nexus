@@ -66,19 +66,25 @@ class TabManager {
     
     activateTab(tab: Tab): void {
         tab.activate();
-
-        // Update the content of the webview based on the selected tab's state
-        const webview = this.webViewContainer.querySelector('webview');
         
-        if (webview) {
-            webview.setAttribute('src', tab.webviewState.url);
-        }
-
         this.tabs.forEach((t) => {
             if (t !== tab) {
                 t.deactivate();
             }
         })
+
+        // Update the content of the webview based on the selected tab's state
+        const webviews: NodeListOf<HTMLElement> = this.webViewContainer.querySelectorAll('webview');
+
+        // hide all the webviews
+        webviews.forEach(view => {
+            view.style.display = 'none';
+        });
+
+        const activeWebview: HTMLElement = this.webViewContainer.querySelector(`#webview-${this.getActive().id}`);
+        if (activeWebview) {
+            activeWebview.style.display = '';
+        }
     }
 
     
@@ -102,5 +108,21 @@ class TabManager {
         }
         
         tabElement.textContent = title;
+    }
+
+
+    getActiveWebview(): HTMLElement {
+        return this.webViewContainer.querySelector(`#webview-${this.getActive().id}`);
+    }
+
+
+    setActiveWebviewURL(url: string): void {
+        const view: HTMLElement = this.getActiveWebview();
+
+        if (view) {
+            view.setAttribute('src', url);
+        } else {
+            console.error('Could not retrieve current webview');
+        }
     }
 }
