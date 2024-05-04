@@ -45,6 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    // @ts-ignore
+    electronAPI.onNextTab(() => {
+        tabManager.goToNext();
+        updateTabStyles();
+    })
+
+
+    // @ts-ignore
+    electronAPI.onPreviousTab(() => {
+        tabManager.goToPrevious();
+        updateTabStyles();
+    })
+
+
     function handleSearch(): void {
         const searchTerm: string = searchInput.value.trim();
         

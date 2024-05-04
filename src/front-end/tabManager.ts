@@ -125,4 +125,24 @@ class TabManager {
 
         view.setAttribute('src', url);
     }
+
+
+    goToNext(): void {
+        const tabIndex = this.tabs.findIndex(tab => tab.active === true);
+
+        // if this is the not last tab
+        if (tabIndex + 1 !== this.tabs.length) {
+            this.activateTab(this.tabs[tabIndex + 1]);
+        }
+    }
+
+
+    goToPrevious(): void {
+        const tabIndex = this.tabs.findIndex(tab => tab.active === true);
+
+        // if this is the not first tab
+        if (tabIndex > 0) {
+            this.activateTab(this.tabs[tabIndex - 1]);
+        }
+    }
 }

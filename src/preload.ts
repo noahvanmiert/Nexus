@@ -27,4 +27,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
         ipcRenderer.on('reload-tab', callback);
     },
 
-});
+    onNextTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('next-tab', callback);
+    },
+
+    onPreviousTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('previous-tab', callback);
+    },
+
+})

@@ -81,6 +81,22 @@ const getTemplate = (appName: string) => {
                         const mainWindow = BrowserWindow.getAllWindows()[0];
                         mainWindow.webContents.send('reload-tab');
                     }
+                },
+                {
+                    label: 'Next Tab',
+                    accelerator: 'CmdOrCtrl+2',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('next-tab');
+                    }
+                },
+                {
+                    label: 'Previous Tab',
+                    accelerator: 'CmdOrCtrl+1',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('previous-tab');
+                    }
                 }
             ]
         },
