@@ -14,6 +14,7 @@ import { ipcRenderer, contextBridge } from 'electron';
 
 
 contextBridge.exposeInMainWorld("electronAPI", {
+    
     onNewTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
         ipcRenderer.on('new-tab', callback);
     },
@@ -24,5 +25,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
     onReloadTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
         ipcRenderer.on('reload-tab', callback);
-    }
+    },
+
 });

@@ -107,6 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.value = event.url;
         })
 
+        webview.addEventListener('did-navigate', (event) => {
+            event.preventDefault();
+
+            console.log(event.url);
+        })
+
         webviewContainer.appendChild(webview);
     }
     
