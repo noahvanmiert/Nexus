@@ -103,7 +103,6 @@ class TabManager {
         
         if (!tabElement) {
             console.error('Could not get HTML element of current tab');
-            
             return;
         }
         
@@ -111,18 +110,19 @@ class TabManager {
     }
 
 
-    getActiveWebview(): HTMLElement {
+    getActiveWebview(): Electron.WebviewTag {
         return this.webViewContainer.querySelector(`#webview-${this.getActive().id}`);
     }
 
 
     setActiveWebviewURL(url: string): void {
-        const view: HTMLElement = this.getActiveWebview();
+        const view: Electron.WebviewTag = this.getActiveWebview();
 
-        if (view) {
-            view.setAttribute('src', url);
-        } else {
+        if (!view) {
             console.error('Could not retrieve current webview');
+            return;
         }
+
+        view.setAttribute('src', url);
     }
 }

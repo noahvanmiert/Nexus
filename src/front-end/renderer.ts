@@ -39,6 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     
+    // @ts-ignore
+    electronAPI.onReloadTab(() => {
+        reloadCurrentTab();
+    })
+
+
     function handleSearch(): void {
         const searchTerm: string = searchInput.value.trim();
         
@@ -174,5 +180,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tabManager.closeTab(activeTabId); // Close the tab in the TabManager
         updateTabStyles();
+    }
+
+
+    function reloadCurrentTab(): void {
+        const view: Electron.WebviewTag = tabManager.getActiveWebview();
+
+        if (!view) {
+            console.error('Could not retrieve current webview');
+            return;
+        }
+
+        view.reload();
     }
 })

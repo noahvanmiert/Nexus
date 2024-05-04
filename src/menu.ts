@@ -73,6 +73,14 @@ const getTemplate = (appName: string) => {
                         const mainWindow = BrowserWindow.getAllWindows()[0];
                         mainWindow.webContents.send('close-tab');
                     }
+                },
+                {
+                    label: 'Reload',
+                    accelerator: 'CmdOrCtrl+R',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('reload-tab');
+                    }
                 }
             ]
         }

@@ -20,5 +20,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
     onCloseTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
         ipcRenderer.on('close-tab', callback);
+    },
+
+    onReloadTab: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('reload-tab', callback);
     }
 });
