@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
     const tabBar = document.getElementById('tab-bar');
     const webviewContainer = document.getElementById('webview-container');
+    const errorContainer = document.getElementById('error-container');
 
     const tabManager = new TabManager(webviewContainer);
     newTab('Google', Defaults.homePage);
@@ -76,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 url = searchTerm;
             }
             
+            // Remove error page
+            errorContainer.style.display = 'none';
+            tabManager.getActiveWebview().style.display = '';
+
             // Create webview and set active url
             searchInput.value = url;
             tabManager.setActiveURL(url);
@@ -83,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // Treat it as a search term and search using Google
             const searchURL = `https://google.com/search?q=${encodeURIComponent(searchTerm)}`;
+            errorContainer.style.display = 'none';
             tabManager.setActiveWebviewURL(searchURL);
         }
     }
@@ -125,6 +131,22 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
 
             console.log(event.url);
+        })
+
+        webview.addEventListener('did-fail-load', (event) => {
+            // -105 => Unresolved name
+            // -102 => Connection refused
+            
+            if (event.errorCode === -105 || event.errorCode === -102) {
+                webview.style.display = 'none';
+
+                errorContainer.style.display = 'block';
+
+                const errorWebview = document.createElement(`webview`);
+                errorWebview.setAttribute('src', 'error.html');
+
+                errorContainer.append(errorWebview);
+            }
         })
 
         webviewContainer.appendChild(webview);
