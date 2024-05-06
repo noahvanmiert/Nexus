@@ -154,12 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     function updateTabStyles(): void {
-        const tabElements = tabManager.getTabs().map(tab => document.getElementById(tab.id.toString())).filter(Boolean);
-        
-        tabManager.getTabs().forEach((tab, index) => {
-            const tabElement = tabElements[index] as HTMLElement;
+        const tabElements = Array.from(document.querySelectorAll('.tab'));
+
+        tabElements.forEach((tabElement, index) => {
+            const tab = tabManager.getTabs()[index];
     
-            if (tabElement) {
+            if (tab && tabElement) {
                 // Toggle the 'active' class using the ternary operator
                 tab.active ? tabElement.classList.add('active') : tabElement.classList.remove('active');
             }
