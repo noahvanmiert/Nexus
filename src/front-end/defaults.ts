@@ -10,8 +10,68 @@
 // ====================================
 
 
+enum SearchEngine {
+    Google,
+    DuckDuckGo,
+    Yahoo,
+    Bing,
+}
+
+
 class Defaults {
-    
-    public static homePage: string = 'https://google.com';
-    
+    private static searchEngine: SearchEngine = SearchEngine.Google;
+
+
+    static getEngine(): SearchEngine {
+        return Defaults.searchEngine;
+    }
+
+
+    static setEngine(engine: SearchEngine): void {
+        Defaults.searchEngine = engine;
+    }
+
+
+    static getHomePage(): string | null {
+        switch (Defaults.searchEngine) {
+            case SearchEngine.Google:
+                return 'https://www.google.com';
+
+            case SearchEngine.DuckDuckGo:
+                return 'https://duckduckgo.com';
+
+            case SearchEngine.Yahoo:
+                return 'https://www.yahoo.com';
+
+            case SearchEngine.Bing:
+                return 'https://www.bing.com';
+
+            default: {
+                console.error('Unknown Search Engine');
+                return null;
+            }
+        }
+    }
+
+
+    static getSearchURL(searchTerm: string): string | null {
+        switch (Defaults.searchEngine) {
+            case SearchEngine.Google:
+                return `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+
+            case SearchEngine.DuckDuckGo:
+                return `https://duckduckgo.com/?q=${encodeURIComponent(searchTerm)}`;
+
+            case SearchEngine.Yahoo:
+                return `https://www.yahoo.com/search?p=${encodeURIComponent(searchTerm)}`;
+
+            case SearchEngine.Bing:
+                return `https://www.bing.com/search?q=${encodeURIComponent(searchTerm)}`;
+
+            default: {
+                console.error('Unknown Search Engine');
+                return null;
+            }
+        }
+    }
 }

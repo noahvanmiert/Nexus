@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const webviewContainer = document.getElementById('webview-container');
     const errorContainer = document.getElementById('error-container');
 
+    Defaults.setEngine(SearchEngine.Bing);
+
     const tabManager = new TabManager(webviewContainer);
-    newTab('Google', Defaults.homePage);
+    newTab('Google', Defaults.getHomePage());
 
     
     searchInput.addEventListener('keydown', (event) => {
@@ -43,13 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     document.getElementById('home-icon').addEventListener('click', () => {
-        handleSearch(Defaults.homePage);
+        handleSearch(Defaults.getHomePage());
     })
 
 
     // @ts-ignore
     electronAPI.onNewTab(() => {
-        newTab('Google', Defaults.homePage);
+        newTab('Google', Defaults.getHomePage());
     })
     
     
@@ -109,8 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabManager.setActiveURL(url);
             tabManager.setActiveWebviewURL(url);
         } else {
-            // Treat it as a search term and search using Google
-            const searchURL = `https://google.com/search?q=${encodeURIComponent(searchTerm)}`;
+            const searchURL = Defaults.getSearchURL(searchTerm);
             errorContainer.style.display = 'none';
             tabManager.setActiveWebviewURL(searchURL);
         }
