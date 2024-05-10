@@ -16,20 +16,63 @@ body {
     border: 1px solid #ccc;
 }
 
-#reload-icon {
-    font-size: 19px;
+#action-icons {
+    font-size: 20px;
     font-weight: bold;
     margin-right: 10px;
+}
+
+#home-icon {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#undo-icon {
+    margin-right: 5px;
+}
+
+#redo-icon {
+    margin-right: 5px;
+}
+
+#undo-icon:hover {
+    cursor: pointer;
+}
+
+#redo-icon:hover {
+    cursor: pointer;
 }
 
 #reload-icon:hover {
     cursor: pointer;
 }
 
+#home-icon:hover {
+    cursor: pointer;
+}
+
+
+#undo-icon:active {
+    color: gray;
+    font-weight: bolder;
+}
+
+#redo-icon:active {
+    color: gray;
+    font-weight: bolder;
+}
+
 #reload-icon:active {
     color: gray;
     font-weight: bolder;
 }
+
+#home-icon:active {
+    color: gray;
+    font-weight: bolder;
+}
+
 
 #search-input {
     flex: 1; /* Allow the input to grow and fill the available space */

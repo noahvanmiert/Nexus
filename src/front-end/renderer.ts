@@ -28,8 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    document.getElementById('undo-icon').addEventListener('click', () => {
+        /* TODO: implement action system */
+    })
+
+    document.getElementById('redo-icon').addEventListener('click', () => {
+        /* TODO: implement action system */
+    })
+
+
     document.getElementById('reload-icon').addEventListener('click', () => {
         reloadCurrentTab();
+    })
+
+
+    document.getElementById('home-icon').addEventListener('click', () => {
+        handleSearch(Defaults.homePage);
     })
 
 
@@ -65,8 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
-    function handleSearch(): void {
-        const searchTerm: string = searchInput.value.trim();
+    function handleSearch(url: string = ''): void {
+        let searchTerm: string = url;
+
+        if (url === '') {
+            searchTerm = searchInput.value.trim();
+        }
         
         if (searchTerm === '') {
             return;
