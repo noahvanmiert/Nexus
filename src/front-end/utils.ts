@@ -39,11 +39,9 @@ class Utils {
             try {
                 // Try to create a new URL object with the URL
                 new URL(url);
-    
-                // If successful, return true
+
                 return true;
             } catch (_) {
-                // If an error occurs, return false
                 return false;
             }
         }

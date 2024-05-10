@@ -89,7 +89,7 @@ class TabManager {
 
     
     setActiveURL(url: string): void {
-        this.getActive().webviewState.url = url;
+        this.getActive().url = url;
     }
     
 

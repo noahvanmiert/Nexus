@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const webviewContainer = document.getElementById('webview-container');
     const errorContainer = document.getElementById('error-container');
 
-    Defaults.setEngine(SearchEngine.Bing);
+    Defaults.setEngine(SearchEngine.Google);
 
     const tabManager = new TabManager(webviewContainer);
     newTab('Google', Defaults.getHomePage());
@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     electronAPI.onNextTab(() => {
         tabManager.goToNext();
         updateTabStyles();
+        searchInput.value = tabManager.getActive().url;
     })
 
 
@@ -78,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
     electronAPI.onPreviousTab(() => {
         tabManager.goToPrevious();
         updateTabStyles();
+        searchInput.value = tabManager.getActive().url;
+
     })
 
 
@@ -199,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (clickedTab && !clickedTab.active) {
             tabManager.activateTab(clickedTab);
             updateTabStyles();
-            searchInput.value = tabManager.getActive().webviewState.url;
+            searchInput.value = tabManager.getActive().url;
         }
     }
     

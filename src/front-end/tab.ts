@@ -11,10 +11,9 @@
 
 
 class Tab {
-    webviewState: WebviewState;
 
     constructor(public title: string, public url: string, public id: number, public active: boolean = false) {
-        this.webviewState = new WebviewState(url, 0);
+        
     }
 
     activate() {
