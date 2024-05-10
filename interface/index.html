@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    
+    <meta charset="utf-8">
     <link type='text/css' rel="stylesheet" href='./style.css'>
+
+    <!-- Include Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <title>Nexus</title>
 </head>
 <body>
@@ -12,6 +15,10 @@
     </div>
 
     <div id="search-bar">
+        <div id='reload-icon-container'>
+            <i id='reload-icon' class="bi bi-arrow-clockwise"></i>
+        </div>
+
         <input type="text" id="search-input" placeholder="Enter website URL or search term">
     </div>
 

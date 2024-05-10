@@ -27,7 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    
+
+    document.getElementById('reload-icon').addEventListener('click', () => {
+        reloadCurrentTab();
+    })
+
+
     // @ts-ignore
     electronAPI.onNewTab(() => {
         newTab('Google', Defaults.homePage);
