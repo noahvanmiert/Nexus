@@ -43,4 +43,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
         ipcRenderer.on('go-forward', callback);
     },
 
+    onDevTools: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('dev-tools', callback);
+    },
+
 })

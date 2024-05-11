@@ -171,4 +171,19 @@ class TabManager {
 
         this.setActiveTitle(webview.getTitle());
     }
+
+
+    toggleDeveloperTools(): void {
+        const webview: Electron.WebviewTag = this.getActiveWebview();
+
+        if (!webview) {
+            return;
+        }
+
+        if (webview.isDevToolsOpened()) {
+            webview.closeDevTools();
+        } else {
+            webview.openDevTools();
+        }
+    }
 }

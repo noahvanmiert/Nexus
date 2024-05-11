@@ -97,6 +97,14 @@ const getTemplate = (appName: string) => {
                         const mainWindow = BrowserWindow.getAllWindows()[0];
                         mainWindow.webContents.send('previous-tab');
                     }
+                },
+                {
+                    label: 'Developer Tools',
+                    accelerator: 'CmdOrCtrl+I',
+                    click: () => {
+                       const mainWindow = BrowserWindow.getAllWindows()[0];
+                       mainWindow.webContents.send('dev-tools');
+                    }
                 }
             ]
         },

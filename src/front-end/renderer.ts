@@ -93,7 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tabManager.goToPrevious();
         updateTabStyles();
         searchInput.value = tabManager.getActive().url;
+    })
 
+
+    // @ts-ignore
+    electronAPI.onDevTools(() => {
+        tabManager.toggleDeveloperTools();
     })
 
 
