@@ -28,19 +28,19 @@ body {
     margin-right: 5px;
 }
 
-#undo-icon {
+#go-back-icon {
     margin-right: 5px;
 }
 
-#redo-icon {
+#go-forward-icon {
     margin-right: 5px;
 }
 
-#undo-icon:hover {
+#go-back-icon:hover {
     cursor: pointer;
 }
 
-#redo-icon:hover {
+#go-forward-icon:hover {
     cursor: pointer;
 }
 
@@ -53,12 +53,12 @@ body {
 }
 
 
-#undo-icon:active {
+#go-back-icon:active {
     color: gray;
     font-weight: bolder;
 }
 
-#redo-icon:active {
+#go-forward-icon:active {
     color: gray;
     font-weight: bolder;
 }

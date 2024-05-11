@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
-    document.getElementById('undo-icon').addEventListener('click', () => {
-        /* TODO: implement action system */
+    document.getElementById('go-back-icon').addEventListener('click', () => {
+        tabManager.goBack();
     })
 
-    document.getElementById('redo-icon').addEventListener('click', () => {
-        /* TODO: implement action system */
+    document.getElementById('go-forward-icon').addEventListener('click', () => {
+        tabManager.goForward();
     })
 
 
@@ -152,12 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tabManager.setActiveURL(event.url);
 
             searchInput.value = event.url;
-        })
-
-        webview.addEventListener('did-navigate', (event) => {
-            event.preventDefault();
-
-            console.log(event.url);
         })
 
         webview.addEventListener('did-fail-load', (event) => {

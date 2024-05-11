@@ -145,4 +145,26 @@ class TabManager {
             this.activateTab(this.tabs[tabIndex - 1]);
         }
     }
+
+
+    goBack(): void {
+        const webview: Electron.WebviewTag = this.getActiveWebview();
+
+        if (!webview) {
+            return;
+        }
+
+        webview.goBack();
+    }
+
+
+    goForward(): void {
+        const webview: Electron.WebviewTag = this.getActiveWebview();
+
+        if (!webview) {
+            return;
+        }
+
+        webview.goForward();
+    }
 }
