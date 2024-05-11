@@ -35,4 +35,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
         ipcRenderer.on('previous-tab', callback);
     },
 
+    onGoBack: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('go-back', callback);
+    },
+
+    onGoForward: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+        ipcRenderer.on('go-forward', callback);
+    },
+
 })

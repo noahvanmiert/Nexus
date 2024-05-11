@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tabManager.goBack();
     })
 
+
     document.getElementById('go-forward-icon').addEventListener('click', () => {
         tabManager.goForward();
     })
@@ -64,6 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // @ts-ignore
     electronAPI.onReloadTab(() => {
         reloadCurrentTab();
+    })
+
+
+    // @ts-ignore
+    electronAPI.onGoBack(() => {
+        tabManager.goBack();
+    })
+
+
+    // @ts-ignore
+    electronAPI.onGoForward(() => {
+        tabManager.goForward();
     })
 
 

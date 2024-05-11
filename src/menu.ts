@@ -119,6 +119,27 @@ const getTemplate = (appName: string) => {
                     role: 'paste'
                 }
             ]
+        },
+        {
+            label: 'Tab',
+            submenu: [
+                {
+                    label: 'Go Back',
+                    accelerator: 'CmdOrCtrl+[',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('go-back');
+                    }
+                },
+                {
+                    label: 'Go Forward',
+                    accelerator: 'CmdOrCtrl+]',
+                    click: () => {
+                        const mainWindow = BrowserWindow.getAllWindows()[0];
+                        mainWindow.webContents.send('go-forward');
+                    }
+                }
+            ]
         }
     ]
 }

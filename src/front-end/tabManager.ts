@@ -155,6 +155,8 @@ class TabManager {
         }
 
         webview.goBack();
+
+        this.setActiveTitle(webview.getTitle());
     }
 
 
@@ -166,5 +168,7 @@ class TabManager {
         }
 
         webview.goForward();
+
+        this.setActiveTitle(webview.getTitle());
     }
 }
