@@ -102,6 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    // @ts-ignore
+    electronAPI.onNewWebviewCreated((details: Electron.HandlerDetails) => {
+        /* When a site should be opened in another tab, this function is called */
+
+        newTab('Untitled', details.url);
+    })
+
+
     function handleSearch(url: string = ''): void {
         let searchTerm: string = url;
 
@@ -146,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const webview = document.createElement('webview');
         webview.setAttribute('src', url);
         webview.setAttribute('id', `webview-${id}`);
+        webview.allowpopups = true;
 
         // Set additional CSS styles
         webview.setAttribute('style', 'width: 100%; height: 100%;');
@@ -171,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             searchInput.value = event.url;
         })
+
 
         webview.addEventListener('did-fail-load', (event) => {
             // -105 => Unresolved name

@@ -12,6 +12,7 @@
 
 import * as path from 'path';
 import getTemplate from './menu';
+import { WebContents } from 'electron';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
@@ -42,10 +43,23 @@ export default class Main {
             }
         });
         
+
         Main.mainWindow.loadFile(
-            path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html'));
+            path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html')
+        );
         
         Main.mainWindow.on('closed', Main.onClose);
+        Main.application.on('web-contents-created', Main.onWebContentsCreated);
+    }
+
+
+    private static onWebContentsCreated(e: Event, webContents: WebContents) {
+        webContents.setWindowOpenHandler((details: Electron.HandlerDetails) => {
+            Main.mainWindow.webContents.send('new-webview-created', details);
+
+            // If we would allow, the new tab would be opened in a popup screen
+            return { action: 'deny' }
+        })
     }
 
 
