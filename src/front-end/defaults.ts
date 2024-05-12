@@ -54,6 +54,28 @@ class Defaults {
     }
 
 
+    static getHomePageTitle(): string | null {
+        switch (Defaults.searchEngine) {
+            case SearchEngine.Google:
+                return 'Google';
+
+            case SearchEngine.DuckDuckGo:
+                return 'DuckDuckGo';
+
+            case SearchEngine.Yahoo:
+                return 'Yahoo';
+
+            case SearchEngine.Bing:
+                return 'Bing';
+
+            default: {
+                console.error('Unkown Search Engine');
+                return null;
+            }
+        }
+    }
+
+
     static getSearchURL(searchTerm: string): string | null {
         switch (Defaults.searchEngine) {
             case SearchEngine.Google:

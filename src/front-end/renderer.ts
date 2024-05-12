@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const webviewContainer = document.getElementById('webview-container');
     const errorContainer = document.getElementById('error-container');
 
-    Defaults.setEngine(SearchEngine.Google);
+    Defaults.setEngine(SearchEngine.DuckDuckGo);
 
     const tabManager = new TabManager(webviewContainer);
-    newTab('Google', Defaults.getHomePage());
+    newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
 
     
     searchInput.addEventListener('keydown', (event) => {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // @ts-ignore
     electronAPI.onNewTab(() => {
-        newTab('Google', Defaults.getHomePage());
+        newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
     })
     
     
@@ -154,6 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const webview = document.createElement('webview');
         webview.setAttribute('src', url);
         webview.setAttribute('id', `webview-${id}`);
+
+        // Needs to be on the handle target:_blank links
         webview.allowpopups = true;
 
         // Set additional CSS styles
