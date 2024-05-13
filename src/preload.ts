@@ -48,7 +48,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     },
 
     onNewWebviewCreated: (callback) => {
-         ipcRenderer.on('new-webview-created', (event, ...args) => {
+         ipcRenderer.on('new-webview-created', (_event, ...args) => {
              // Pass all received arguments to the callback function
              callback(...args);
          });

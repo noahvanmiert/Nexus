@@ -24,7 +24,7 @@ class Utils {
     
     // Check if a given text has a valid domain and no spaces (e.g. google.com, youtube.com, ...)
     static hasValidDomain(text: string): boolean {
-        const domainRegex = /^(?!.*\s)\b\w+(?:-?\w)*\.(?:\w{2,})(?:\.\w{2,})?(?:$|[^a-zA-Z0-9])/i;
+        const domainRegex = /^(?!.*\s)\b\w+(?:-?\w)*\.\w{2,}(?:\.\w{2,})?(?:$|[^a-zA-Z0-9])/i;
         
         return domainRegex.test(text);
     }

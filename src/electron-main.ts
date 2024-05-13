@@ -53,7 +53,7 @@ export default class Main {
     }
 
 
-    private static onWebContentsCreated(e: Event, webContents: WebContents) {
+    private static onWebContentsCreated(_e: Event, webContents: WebContents) {
         webContents.setWindowOpenHandler((details: Electron.HandlerDetails) => {
             Main.mainWindow.webContents.send('new-webview-created', details);
 

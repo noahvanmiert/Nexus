@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const webviewContainer = document.getElementById('webview-container');
     const errorContainer = document.getElementById('error-container');
 
-    Defaults.setEngine(SearchEngine.DuckDuckGo);
+    Defaults.setEngine(SearchEngine.Google);
 
     const tabManager = new TabManager(webviewContainer);
     newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             handleSearch();
         }
     })
+
 
 
     document.getElementById('go-back-icon').addEventListener('click', () => {
@@ -188,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // -105 => Unresolved name
             // -102 => Connection refused
             
-            if (event.errorCode === -105 || event.errorCode === -102) {
+            if (event.errorCode === -105 || event.errorCode === -102 || event.errorCode === -202) {
                 webview.style.display = 'none';
 
                 errorContainer.style.display = 'block';
@@ -269,6 +270,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (tabElement) {
             tabElement.remove(); // Remove tab from the tab bar
+        }
+
+        const webview = tabManager.getActiveWebview();
+        if (webview) {
+            webview.remove();
+
         }
 
         tabManager.closeTab(activeTabId); // Close the tab in the TabManager

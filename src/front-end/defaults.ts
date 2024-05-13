@@ -22,11 +22,6 @@ class Defaults {
     private static searchEngine: SearchEngine = SearchEngine.Google;
 
 
-    static getEngine(): SearchEngine {
-        return Defaults.searchEngine;
-    }
-
-
     static setEngine(engine: SearchEngine): void {
         Defaults.searchEngine = engine;
     }
