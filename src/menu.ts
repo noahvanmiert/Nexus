@@ -11,7 +11,7 @@
 
 
 import { BrowserWindow } from 'electron';
-
+import Main from './electron-main'
 
 const getTemplate = (appName: string) => {
     return [
@@ -21,6 +21,15 @@ const getTemplate = (appName: string) => {
                 {
                     label: 'About ' + appName,
                     role: 'about'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    label: 'Settings',
+                    click: () => {
+                        Main.createSettingsWindow();
+                    }
                 },
                 {
                     type: 'separator'

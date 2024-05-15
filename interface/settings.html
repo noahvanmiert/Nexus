@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <link type='text/css' rel="stylesheet" href='./settings.css'>
+    <title>Settings</title>
+</head>
+<body>
+    <div class='content'>
+        <div id='title-bar'>
+            <h2>Preferences</h2>
+        </div>
+        
+        
+        <div id='search-engine-bar' class='preference-component'>
+            <p class='preference-component-name'>Default Search Engine</p>
+            
+            <select name="Default Search Engine" id="engine">
+                <option value="google">Google</option>
+                <option value="duckduckgo">DuckDuckGo</option>
+                <option value="yahoo">Yahoo</option>
+                <option value="bing">Bing</option>
+            </select>
+        </div>
+        
+        <div id='homepage-bar' class='preference-component'>
+            <p class='preference-component-name'>Default Homepage</p>
+            
+            <input id='default-homepage-input' type=text placeholder="e.g. www.google.com">
+        </div>
+    </div>
+    
+    <footer class='footer'>
+        <div id='cancel-save-bar'>
+            <button id='cancel-button' class='button-class'>Cancel</button>
+            <button id='save-button' class='button-class'>Save</button>
+        </div>
+    </footer>
+    
+    <script src='../build/front-end/settings.js'></script>
+</body>
+</html>

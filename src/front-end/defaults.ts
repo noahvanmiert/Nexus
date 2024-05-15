@@ -20,6 +20,7 @@ enum SearchEngine {
 
 class Defaults {
     private static searchEngine: SearchEngine = SearchEngine.Google;
+    private static homePage: string | null = null;
 
 
     static setEngine(engine: SearchEngine): void {
@@ -27,7 +28,16 @@ class Defaults {
     }
 
 
+    static setCustomHomepage(url: string) {
+        Defaults.homePage = url;
+    }
+
+
     static getHomePage(): string | null {
+        if (this.homePage) {
+            return Defaults.homePage;
+        }
+
         switch (Defaults.searchEngine) {
             case SearchEngine.Google:
                 return 'https://www.google.com';

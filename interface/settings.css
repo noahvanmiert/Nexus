@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body fills the viewport height */
+}
+
+
+.content {
+    flex: 1; /* Fill remaining vertical space */
+}
+
+
+#title-bar {
+    background-color: #a7c7e7;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+#title-bar h2 {
+    font-family: "Trebuchet MS", sans-serif;
+}
+
+
+.preference-component {
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 25px;
+}
+
+.preference-component-name {
+    margin: 10px;
+    font-family: "Trebuchet MS", sans-serif;
+}
+
+select {
+    padding: 5px;
+    margin: 15px;
+}
+
+#default-homepage-input {
+    padding: 5px;
+    margin: 15px;
+    font-family: "Trebuchet MS", sans-serif;
+}
+
+.footer {
+    flex-shrink: 0; /* Prevent footer from shrinking */
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.button-class {
+    margin: 5px;
+    padding: 8px;
+    font-family: "Trebuchet MS", sans-serif;
+    background-color: #a7c7e7;
+    display:inline-block;
+    cursor: pointer;
+    border-radius:3px;
+    border: none;
+    text-decoration: none;
+}
+
+.button-class:hover {
+    background-color: #0688fa;
+}
+
+.button-class:active {
+    position:relative;
+    top: 1px;
+}
+

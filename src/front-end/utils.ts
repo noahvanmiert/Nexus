@@ -51,6 +51,21 @@ class Utils {
         return Utils.hasValidDomain(url);
     }
     
+
+    static engineNameToEngine(engine: string): SearchEngine | null {
+        switch (engine) {
+            case 'google': return SearchEngine.Google;
+            case 'duckduckgo': return SearchEngine.DuckDuckGo;
+            case 'yahoo': return SearchEngine.Yahoo;
+            case 'bing': return SearchEngine.Bing;
+
+            default: {
+                console.error('Unknown search engine:', engine);
+                return null;
+            }
+        }
+    }
+
 }
 
 

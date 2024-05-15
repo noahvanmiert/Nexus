@@ -111,6 +111,35 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    // @ts-ignore
+    electronAPI.onEngineChanged((engine: string) => {
+        const searchEngine: SearchEngine = Utils.engineNameToEngine(engine);
+
+        if (engine) {
+            Defaults.setEngine(searchEngine);
+        }
+    })
+
+
+    // @ts-ignore
+    electronAPI.onHomepageChanged((url_: string) => {
+        if (!Utils.isValidURL(url_)) {
+            console.error('invalid url for homepage');
+            return;
+        }
+
+        let url: string;
+
+        if (Utils.hasValidDomain(url_)) {
+            url = 'https://' + url_;
+        } else {
+            url = url_;
+        }
+
+        Defaults.setCustomHomepage(url);
+    })
+
+
     function handleSearch(url: string = ''): void {
         let searchTerm: string = url;
 
