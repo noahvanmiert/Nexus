@@ -66,4 +66,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
         })
     },
 
+    onBrowserSettings: (callback) => {
+        ipcRenderer.on('browser-settings', (_event, ...args) => {
+            callback(...args);
+        })
+    }
+
 })

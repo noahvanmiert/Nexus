@@ -17,6 +17,19 @@ const cancelButton = document.getElementById('cancel-button');
 const saveButton = document.getElementById('save-button');
 
 
+/*
+* TODO:
+*   Privacy Settings
+*   Appearance and themes
+*   Tabs and windows
+*   Security settings
+*   Content settings
+*   Default applications
+*   Sync and Backup
+*   Advanced Settings
+*/
+
+
 cancelButton.addEventListener('click', () => {
     // @ts-ignore
     electronAPI.sendToMain('cancel-settings');
@@ -31,4 +44,20 @@ saveButton.addEventListener('click', () => {
     
     // @ts-ignore
     electronAPI.sendToMain('save-settings', settings);
+})
+
+
+// @ts-ignore
+electronAPI.receiveFromMain('settings', (settings) => {
+    if (!settings) {
+        return;
+    }
+
+    if (settings.engine) {
+        defaultEngine.value = settings.engine;
+    }
+
+    if (settings.value) {
+        defaultHomepage.value = settings.homepage;
+    }
 })

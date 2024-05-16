@@ -24,7 +24,10 @@ class Defaults {
 
 
     static setEngine(engine: SearchEngine): void {
-        Defaults.searchEngine = engine;
+        /* engine will be null if invalid */
+        if (engine) {
+            Defaults.searchEngine = engine;
+        }
     }
 
 

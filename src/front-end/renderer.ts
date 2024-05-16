@@ -16,11 +16,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBar = document.getElementById('tab-bar');
     const webviewContainer = document.getElementById('webview-container');
     const errorContainer = document.getElementById('error-container');
-
-    Defaults.setEngine(SearchEngine.Google);
-
     const tabManager = new TabManager(webviewContainer);
-    newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
+
+    let firstLoad: boolean = true;
+
+    // @ts-ignore
+    electronAPI.onBrowserSettings((settings) => {
+        if (!settings) {
+            return;
+        }
+
+        /* if the homepage is valid */
+        if (settings.homepage) {
+            Defaults.setCustomHomepage(settings.homepage);
+        }
+
+        Defaults.setEngine(Utils.engineNameToEngine(settings.engine));
+        console.log(`Defaults: (${Defaults.getHomePageTitle()}) | (${Defaults.getHomePage()})`);
+
+        if (firstLoad) {
+            newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
+            firstLoad = false;
+        }
+    })
+
+
+
+    console.log(`Defaults before TAB: (${Defaults.getHomePageTitle()}) | (${Defaults.getHomePage()})`);
+
 
     
     searchInput.addEventListener('keydown', (event) => {
@@ -123,6 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // @ts-ignore
     electronAPI.onHomepageChanged((url_: string) => {
+        if (!url_) {
+            return;
+        }
+
         if (!Utils.isValidURL(url_)) {
             console.error('invalid url for homepage');
             return;
@@ -138,6 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         Defaults.setCustomHomepage(url);
     })
+
+
+
 
 
     function handleSearch(url: string = ''): void {
