@@ -15,30 +15,40 @@ enum SearchEngine {
     DuckDuckGo,
     Yahoo,
     Bing,
+    Aol,
+    Ask,
 }
 
 
 class Defaults {
     private static searchEngine: SearchEngine = SearchEngine.Google;
-    private static homePage: string | null = null;
+    private static homepage: string | null = null;
 
+    static getEngine(): SearchEngine {
+        return Defaults.searchEngine;
+    }
 
     static setEngine(engine: SearchEngine): void {
         /* engine will be null if invalid */
-        if (engine) {
-            Defaults.searchEngine = engine;
-        }
+        Defaults.searchEngine = engine;
     }
 
 
     static setCustomHomepage(url: string) {
-        Defaults.homePage = url;
+        Defaults.homepage = url;
     }
 
 
-    static getHomePage(): string | null {
-        if (this.homePage) {
-            return Defaults.homePage;
+    static resetHomepage(): void {
+        Defaults.homepage = null;
+        Defaults.homepage = Defaults.getHomepage();
+
+        console.log('reset to:', this.homepage)
+    }
+
+    static getHomepage(): string | null {
+        if (this.homepage) {
+            return Defaults.homepage;
         }
 
         switch (Defaults.searchEngine) {
@@ -49,10 +59,13 @@ class Defaults {
                 return 'https://duckduckgo.com';
 
             case SearchEngine.Yahoo:
-                return 'https://www.yahoo.com';
+                return 'https://www.search.yahoo.com';
 
             case SearchEngine.Bing:
-                return 'https://www.bing.com';
+                return 'https://search.bing.com';
+
+            case SearchEngine.Aol:
+                return 'https://search.aol.com';
 
             default: {
                 console.error('Unknown Search Engine');
@@ -62,7 +75,7 @@ class Defaults {
     }
 
 
-    static getHomePageTitle(): string | null {
+    static getHomepageTitle(): string | null {
         switch (Defaults.searchEngine) {
             case SearchEngine.Google:
                 return 'Google';
@@ -75,6 +88,9 @@ class Defaults {
 
             case SearchEngine.Bing:
                 return 'Bing';
+
+            case SearchEngine.Aol:
+                return 'Aol';
 
             default: {
                 console.error('Unkown Search Engine');
@@ -93,10 +109,13 @@ class Defaults {
                 return `https://duckduckgo.com/?q=${encodeURIComponent(searchTerm)}`;
 
             case SearchEngine.Yahoo:
-                return `https://www.yahoo.com/search?p=${encodeURIComponent(searchTerm)}`;
+                return `https://www.search.yahoo.com/search?p=${encodeURIComponent(searchTerm)}`;
 
             case SearchEngine.Bing:
                 return `https://www.bing.com/search?q=${encodeURIComponent(searchTerm)}`;
+
+            case SearchEngine.Aol:
+                return `https://search.aol.com/search?q=${encodeURIComponent(searchTerm)}`;
 
             default: {
                 console.error('Unknown Search Engine');

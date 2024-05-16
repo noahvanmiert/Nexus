@@ -54,10 +54,11 @@ class Utils {
 
     static engineNameToEngine(engine: string): SearchEngine | null {
         switch (engine) {
-            case 'google': return SearchEngine.Google;
+            case 'google':     return SearchEngine.Google;
             case 'duckduckgo': return SearchEngine.DuckDuckGo;
-            case 'yahoo': return SearchEngine.Yahoo;
-            case 'bing': return SearchEngine.Bing;
+            case 'yahoo':      return SearchEngine.Yahoo;
+            case 'bing':       return SearchEngine.Bing;
+            case 'aol':        return SearchEngine.Aol;
 
             default: {
                 console.error('Unknown search engine:', engine);

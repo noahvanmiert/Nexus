@@ -21,29 +21,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let firstLoad: boolean = true;
 
     // @ts-ignore
-    electronAPI.onBrowserSettings((settings) => {
+    app.receive('browser-settings', (settings: Settings) => {
         if (!settings) {
+            if (firstLoad) {
+                newTab(Defaults.getHomepageTitle(), Defaults.getHomepage());
+            }
+
             return;
         }
+
+        console.log('want to set engine to:', settings.engine);
+        Defaults.setEngine(Utils.engineNameToEngine(settings.engine));
+
+        console.log(Defaults.getEngine());
 
         /* if the homepage is valid */
         if (settings.homepage) {
             Defaults.setCustomHomepage(settings.homepage);
+        } else {
+            Defaults.resetHomepage();
         }
 
-        Defaults.setEngine(Utils.engineNameToEngine(settings.engine));
-        console.log(`Defaults: (${Defaults.getHomePageTitle()}) | (${Defaults.getHomePage()})`);
-
         if (firstLoad) {
-            newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
+            newTab(Defaults.getHomepageTitle(), Defaults.getHomepage());
             firstLoad = false;
         }
     })
-
-
-
-    console.log(`Defaults before TAB: (${Defaults.getHomePageTitle()}) | (${Defaults.getHomePage()})`);
-
 
     
     searchInput.addEventListener('keydown', (event) => {
@@ -70,42 +73,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     document.getElementById('home-icon').addEventListener('click', () => {
-        handleSearch(Defaults.getHomePage());
+        handleSearch(Defaults.getHomepage());
     })
 
 
     // @ts-ignore
-    electronAPI.onNewTab(() => {
-        newTab(Defaults.getHomePageTitle(), Defaults.getHomePage());
+    app.receive('new-tab', () => {
+        newTab(Defaults.getHomepageTitle(), Defaults.getHomepage());
     })
     
     
     // @ts-ignore
-    electronAPI.onCloseTab(() => {
+    app.receive('close-tab', () => {
         closeCurrentTab();
     })
 
     
     // @ts-ignore
-    electronAPI.onReloadTab(() => {
+    app.receive('reload-tab', () => {
         reloadCurrentTab();
     })
 
 
     // @ts-ignore
-    electronAPI.onGoBack(() => {
+    app.receive('go-back', () => {
         tabManager.goBack();
     })
 
 
     // @ts-ignore
-    electronAPI.onGoForward(() => {
+    app.receive('go-forward', () => {
         tabManager.goForward();
     })
 
 
     // @ts-ignore
-    electronAPI.onNextTab(() => {
+    app.receive('next-tab', () => {
         tabManager.goToNext();
         updateTabStyles();
         searchInput.value = tabManager.getActive().url;
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // @ts-ignore
-    electronAPI.onPreviousTab(() => {
+    app.receive('previous-tab', () => {
         tabManager.goToPrevious();
         updateTabStyles();
         searchInput.value = tabManager.getActive().url;
@@ -121,53 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // @ts-ignore
-    electronAPI.onDevTools(() => {
+    app.receive('dev-tools', () => {
         tabManager.toggleDeveloperTools();
     })
 
 
     // @ts-ignore
-    electronAPI.onNewWebviewCreated((details: Electron.HandlerDetails) => {
+    app.receive('new-webview-created', (details: Electron.HandlerDetails) => {
         /* When a site should be opened in another tab, this function is called */
-
         newTab('Untitled', details.url);
     })
-
-
-    // @ts-ignore
-    electronAPI.onEngineChanged((engine: string) => {
-        const searchEngine: SearchEngine = Utils.engineNameToEngine(engine);
-
-        if (engine) {
-            Defaults.setEngine(searchEngine);
-        }
-    })
-
-
-    // @ts-ignore
-    electronAPI.onHomepageChanged((url_: string) => {
-        if (!url_) {
-            return;
-        }
-
-        if (!Utils.isValidURL(url_)) {
-            console.error('invalid url for homepage');
-            return;
-        }
-
-        let url: string;
-
-        if (Utils.hasValidDomain(url_)) {
-            url = 'https://' + url_;
-        } else {
-            url = url_;
-        }
-
-        Defaults.setCustomHomepage(url);
-    })
-
-
-
 
 
     function handleSearch(url: string = ''): void {

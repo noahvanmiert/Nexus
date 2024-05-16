@@ -30,25 +30,30 @@ const saveButton = document.getElementById('save-button');
 */
 
 
+type Settings = {
+    [key: string]: any;
+}
+
+
 cancelButton.addEventListener('click', () => {
     // @ts-ignore
-    electronAPI.sendToMain('cancel-settings');
+    app.send('cancel-settings');
 })
 
 
 saveButton.addEventListener('click', () => {
-    const settings = {
+    const settings: Settings = {
         engine: defaultEngine.value,
         homepage: defaultHomepage.value
     };
     
     // @ts-ignore
-    electronAPI.sendToMain('save-settings', settings);
+    app.send('save-settings', settings);
 })
 
 
 // @ts-ignore
-electronAPI.receiveFromMain('settings', (settings) => {
+app.receive('settings', (settings: Settings) => {
     if (!settings) {
         return;
     }
@@ -57,7 +62,7 @@ electronAPI.receiveFromMain('settings', (settings) => {
         defaultEngine.value = settings.engine;
     }
 
-    if (settings.value) {
+    if (settings.homepage) {
         defaultHomepage.value = settings.homepage;
     }
 })

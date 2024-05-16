@@ -16,6 +16,11 @@ import { WebContents, ipcMain } from 'electron';
 import Serializer from "./serializer";
 
 
+type Settings = {
+    [key: string]: any;
+}
+
+
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
     static application: Electron.App;
@@ -55,12 +60,12 @@ export default class Main {
     }
 
 
-    private static handleSettings(settings): void {
+    private static handleSettings(settings: Settings): void {
         settings.homepage = Main.prepareURL(settings.homepage);
 
         /* if the homepage URL is invalid */
         if (!settings.homepage) {
-            console.error('Homepage URL received from settings is invalid, no changed to the dafault homepage will be made.');
+            console.error('Homepage URL received from settings is invalid, it will be set to the default engine homepage.');
         }
 
         Serializer.serialize(settings);
@@ -79,27 +84,26 @@ export default class Main {
                 devTools: true,
                 preload: path.join(__dirname, 'preload.js')
             }
-        });
+        })
         
 
         Main.mainWindow.loadFile(
             path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html')
-        );
+        )
         
         const settings = Serializer.deserialize();
         Main.mainWindow.webContents.on('did-finish-load', () => {
             Main.mainWindow.webContents.send('browser-settings', settings);
-        });
-
+        })
 
         Main.mainWindow.on('closed', Main.onClose);
         Main.application.on('web-contents-created', Main.onWebContentsCreated);
 
-        ipcMain.on('cancel-settings', (event) => {
+        ipcMain.on('cancel-settings', (e) => {
             Main.settingWindow.close();
         });
 
-        ipcMain.on('save-settings', (event, settings) => {
+        ipcMain.on('save-settings', (e, settings: Settings) => {
             Main.handleSettings(settings);
 
             /* close the window after saving */
@@ -134,8 +138,8 @@ export default class Main {
             );
 
         Main.settingWindow.on('ready-to-show', () => {
-            /* deserialize the settings */
-            Main.settingWindow.webContents.send('settings', Serializer.deserialize());
+            const settings: Settings = Serializer.deserialize();
+            Main.settingWindow.webContents.send('settings', settings);
         })
 
         Main.settingWindow.on('closed', () => {
