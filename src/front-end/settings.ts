@@ -43,7 +43,7 @@ cancelButton.addEventListener('click', () => {
 
 saveButton.addEventListener('click', () => {
     const settings: Settings = {
-        engine: defaultEngine.value,
+        engine:   defaultEngine.value,
         homepage: defaultHomepage.value
     };
     

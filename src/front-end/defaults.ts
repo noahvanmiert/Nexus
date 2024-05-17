@@ -22,29 +22,24 @@ enum SearchEngine {
 
 class Defaults {
     private static searchEngine: SearchEngine = SearchEngine.Google;
-    private static homepage: string | null = null;
+    private static homepage: string = '';
 
-    static getEngine(): SearchEngine {
-        return Defaults.searchEngine;
-    }
 
     static setEngine(engine: SearchEngine): void {
-        /* engine will be null if invalid */
         Defaults.searchEngine = engine;
     }
 
 
-    static setCustomHomepage(url: string) {
+    static setCustomHomepage(url: string): void {
         Defaults.homepage = url;
     }
 
 
     static resetHomepage(): void {
-        Defaults.homepage = null;
+        Defaults.homepage = '';
         Defaults.homepage = Defaults.getHomepage();
-
-        console.log('reset to:', this.homepage)
     }
+
 
     static getHomepage(): string | null {
         if (this.homepage) {

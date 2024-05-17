@@ -20,7 +20,7 @@ contextBridge.exposeInMainWorld('app', {
     },
     
     receive: (channel: string, func: any) => {
-        ipcRenderer.on(channel, (event, ...args) => func(...args));
+        ipcRenderer.on(channel, (e, ...args) => func(...args));
     }
     
 })

@@ -10,8 +10,7 @@
 // ====================================
 
 
-class
-TabManager {
+class TabManager {
     private tabs: Tab[] = [];
     private webViewContainer: HTMLElement;
 

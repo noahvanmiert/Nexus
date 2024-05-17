@@ -13,6 +13,7 @@
 import { BrowserWindow } from 'electron';
 import Main from './electron-main'
 
+
 const getTemplate = (appName: string) => {
     return [
         {

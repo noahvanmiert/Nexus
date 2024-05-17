@@ -11,50 +11,54 @@
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Query DOM elements once and store references
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
     const tabBar = document.getElementById('tab-bar');
     const webviewContainer = document.getElementById('webview-container');
     const errorContainer = document.getElementById('error-container');
+
     const tabManager = new TabManager(webviewContainer);
 
-    let firstLoad: boolean = true;
+    let firstLoad = true;
+
 
     // @ts-ignore
     app.receive('browser-settings', (settings: Settings) => {
         if (!settings) {
-            if (firstLoad) {
-                newTab(Defaults.getHomepageTitle(), Defaults.getHomepage());
-            }
-
+            handleFirstLoad();
             return;
         }
 
-        console.log('want to set engine to:', settings.engine);
-        Defaults.setEngine(Utils.engineNameToEngine(settings.engine));
+        applySettings(settings);
+        handleFirstLoad();
+    })
 
-        console.log(Defaults.getEngine());
 
-        /* if the homepage is valid */
-        if (settings.homepage) {
-            Defaults.setCustomHomepage(settings.homepage);
-        } else {
-            Defaults.resetHomepage();
-        }
-
+    function handleFirstLoad(): void {
         if (firstLoad) {
             newTab(Defaults.getHomepageTitle(), Defaults.getHomepage());
             firstLoad = false;
         }
-    })
+    }
 
-    
-    searchInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
+
+    function applySettings(settings: Settings): void {
+        Defaults.setEngine(Utils.engineNameToEngine(settings.engine));
+
+        /* if the homepage is valid */
+        if (!settings.homepage) {
+            Defaults.resetHomepage();
+            return;
+        }
+
+        Defaults.setCustomHomepage(settings.homepage);
+    }
+
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
             handleSearch();
         }
     })
-
 
 
     document.getElementById('go-back-icon').addEventListener('click', () => {
@@ -81,14 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
     app.receive('new-tab', () => {
         newTab(Defaults.getHomepageTitle(), Defaults.getHomepage());
     })
-    
-    
+
+
     // @ts-ignore
     app.receive('close-tab', () => {
         closeCurrentTab();
     })
 
-    
+
     // @ts-ignore
     app.receive('reload-tab', () => {
         reloadCurrentTab();
@@ -137,115 +141,119 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function handleSearch(url: string = ''): void {
-        let searchTerm: string = url;
+        let searchTerm = url || searchInput.value.trim();
 
-        if (url === '') {
-            searchTerm = searchInput.value.trim();
-        }
-        
-        if (searchTerm === '') {
+        if (!searchTerm) {
             return;
         }
-        
+
         if (Utils.isValidURL(searchTerm)) {
-            let url: string;
-            
-            // if the protocol isn't added but the address is valid, add the protocol
-            if (Utils.hasValidDomain(searchTerm)) {
-                url = 'https://' + searchTerm;
-            } else {
-                url = searchTerm;
-            }
-            
-            // Remove error page
-            errorContainer.style.display = 'none';
-            tabManager.getActiveWebview().style.display = '';
-
-            // Create webview and set active url
-            searchInput.value = url;
-            tabManager.setActiveURL(url);
-            tabManager.setActiveWebviewURL(url);
-        } else {
-            const searchURL = Defaults.getSearchURL(searchTerm);
-            errorContainer.style.display = 'none';
-            tabManager.setActiveWebviewURL(searchURL);
+            handleValidURL(searchTerm);
+            return;
         }
+
+        handleSearchQuery(searchTerm);
     }
-    
 
-    // Function to create and load a webview
+
+    function handleValidURL(searchTerm: string): void {
+        let url = Utils.hasValidDomain(searchTerm) ? `https://${searchTerm}` : searchTerm;
+
+        hideErrorContainer()
+        showActiveWebview();
+
+        searchInput.value = url;
+        tabManager.setActiveURL(url);
+        tabManager.setActiveWebviewURL(url);
+    }
+
+
+    function handleSearchQuery(searchTerm: string): void {
+        const searchURL = Defaults.getSearchURL(searchTerm);
+
+        hideErrorContainer();
+        tabManager.setActiveWebviewURL(searchURL);
+    }
+
+
     function createWebview(url: string, id: number): void {
-
-        // Create new webview element
         const webview = document.createElement('webview');
-        webview.setAttribute('src', url);
-        webview.setAttribute('id', `webview-${id}`);
 
-        // Needs to be on the handle target:_blank links
-        webview.allowpopups = true;
-
-        // Set additional CSS styles
-        webview.setAttribute('style', 'width: 100%; height: 100%;');
-
-        webview.addEventListener('dom-ready', () => {
-            let title: string;
-            
-            try {
-                title = webview.getTitle() || '';
-            } catch (err) {
-                console.error('An error occured while retrieving tab title:', err);
-            }
-            
-            tabManager.setActiveTitle(title);
-
-            // change the title in the tab element itself
-            tabManager.updateHTMLTabTitle(title);
-        })
-
-        webview.addEventListener('did-navigate-in-page', (event) => {
-            // Log the URL of the page where the navigation occurred
-            tabManager.setActiveURL(event.url);
-
-            searchInput.value = event.url;
-        })
-
-
-        webview.addEventListener('did-fail-load', (event) => {
-            // -105 => Unresolved name
-            // -102 => Connection refused
-            
-            if (event.errorCode === -105 || event.errorCode === -102 || event.errorCode === -202) {
-                webview.style.display = 'none';
-
-                errorContainer.style.display = 'block';
-
-                const errorWebview = document.createElement(`webview`);
-                errorWebview.setAttribute('src', 'error.html');
-
-                errorContainer.append(errorWebview);
-            }
-        })
+        initializeWebview(webview, url, id);
+        attachEventListeners(webview);
 
         webviewContainer.appendChild(webview);
     }
-    
-    
+
+
+    function initializeWebview(webview: Electron.WebviewTag, url: string, id: number): void {
+        webview.setAttribute('src', url);
+        webview.setAttribute('id', `webview-${id}`);
+        webview.setAttribute('style', 'width: 100%; height: 100%;');
+
+        /* Needs to be on the handle target:_blank links */
+        webview.allowpopups = true;
+    }
+
+
+    function attachEventListeners(webview: Electron.WebviewTag): void {
+        webview.addEventListener('dom-ready', handleDomReady);
+        webview.addEventListener('did-navigate-in-page', handleDidNavigateInPage);
+        webview.addEventListener('did-fail-load', handleDidFailLoad);
+    }
+
+
+    function handleDomReady(this: Electron.WebviewTag): void {
+        try {
+            const title = this.getTitle() || '';
+            tabManager.setActiveTitle(title);
+            tabManager.updateHTMLTabTitle(title);
+        } catch (err) {
+            console.error(`An error occured while retrieving tab title: ${err}`);
+        }
+    }
+
+
+    function handleDidNavigateInPage(this: Electron.WebviewTag, e: any): void {
+        tabManager.setActiveURL(e.url);
+        searchInput.value = e.url;
+    }
+
+
+    function handleDidFailLoad(this: Electron.WebviewTag, e: any): void {
+        const errorCodes = [-105, -102, -202];
+
+        if (errorCodes.includes(e.errorCode)) {
+            this.style.display = 'none';
+            showErrorPage();
+        }
+    }
+
+
+    function showErrorPage(): void {
+        errorContainer.style.display = 'block';
+        const errorWebview = document.createElement('webview');
+        errorWebview.setAttribute('src', 'error.html');
+        errorContainer.appendChild(errorWebview);
+    }
+
+
     function updateTabStyles(): void {
         const tabElements = Array.from(document.querySelectorAll('.tab'));
 
         tabElements.forEach((tabElement, index) => {
             const tab = tabManager.getTabs()[index];
-    
+
             if (tab && tabElement) {
                 // Toggle the 'active' class using the ternary operator
                 tab.active ? tabElement.classList.add('active') : tabElement.classList.remove('active');
             }
         })
     }
-    
 
-    function handleTabSelect(event: MouseEvent): void {
-        const tabElement = event.currentTarget as HTMLElement;
+
+    function handleTabSelect(e: MouseEvent): void {
+        const tabElement = e.currentTarget as HTMLElement;
         const tabId = parseInt(tabElement.id);
         const clickedTab = tabManager.getTabs().find(tab => tab.id === tabId);
 
@@ -255,44 +263,51 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.value = tabManager.getActive().url;
         }
     }
-    
+
 
     function newTab(title: string, url: string): void {
-        let tabId = Utils.iota();
+        const tabId = Utils.iota();
 
-        const newTab = document.createElement('div');
-        newTab.className = 'tab';
-        newTab.id = tabId.toString();
-        newTab.textContent = title;
-        
-        newTab.addEventListener('click', handleTabSelect);
+        const newTabElement = createTabElement(title, tabId);
+        tabBar.appendChild(newTabElement);
 
-        tabBar.appendChild(newTab);
+        const tab = tabManager.addTab(title, url, tabId);
+        tabManager.activateTab(tab);
 
-        let t = tabManager.addTab(title, url, tabId);
-        tabManager.activateTab(t);
         updateTabStyles();
-
         createWebview(url, tabId);
     }
-    
+
+
+    function createTabElement(title: string, id: number): HTMLElement {
+        const tab = document.createElement('div');
+
+        tab.className = 'tab';
+        tab.id = id.toString();
+        tab.textContent = title;
+
+        tab.addEventListener('click', handleTabSelect);
+
+        return tab;
+    }
+
 
     function closeCurrentTab(): void {
         const tabs = tabManager.getTabs();
         const numTabs = tabs.length;
-        
+
         if (numTabs === 1) {
             return; // Do not close if there's only one tab
         }
-    
+
         const activeTab = tabManager.getActive();
         if (!activeTab) {
             return; // No active tab, nothing to close
         }
-    
+
         const activeTabId = activeTab.id;
         const tabElement = document.getElementById(activeTabId.toString());
-        
+
         if (tabElement) {
             tabElement.remove(); // Remove tab from the tab bar
         }
@@ -300,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const webview = tabManager.getActiveWebview();
         if (webview) {
             webview.remove();
-
         }
 
         tabManager.closeTab(activeTabId); // Close the tab in the TabManager
@@ -317,5 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         view.reload();
+    }
+
+
+    function hideErrorContainer(): void {
+        errorContainer.style.display = 'none';
+    }
+
+
+    function showActiveWebview(): void {
+        tabManager.getActiveWebview().style.display = '';
     }
 })

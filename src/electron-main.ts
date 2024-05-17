@@ -34,6 +34,7 @@ export default class Main {
         }
     }
 
+
     private static onClose(): void {
         Main.mainWindow = null;
 
@@ -48,15 +49,11 @@ export default class Main {
             return null;
         }
 
-        let url: string;
-
         if (hasValidDomain(homepage)) {
-            url = 'https://' + homepage;
-        } else {
-            url = homepage;
+            return 'https://' + homepage;
         }
 
-        return url;
+        return homepage;
     }
 
 
@@ -91,9 +88,8 @@ export default class Main {
             path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html')
         )
         
-        const settings = Serializer.deserialize();
         Main.mainWindow.webContents.on('did-finish-load', () => {
-            Main.mainWindow.webContents.send('browser-settings', settings);
+            Main.mainWindow.webContents.send('browser-settings', Serializer.deserialize());
         })
 
         Main.mainWindow.on('closed', Main.onClose);
@@ -101,18 +97,18 @@ export default class Main {
 
         ipcMain.on('cancel-settings', (e) => {
             Main.settingWindow.close();
-        });
+        })
 
         ipcMain.on('save-settings', (e, settings: Settings) => {
             Main.handleSettings(settings);
 
             /* close the window after saving */
             Main.settingWindow.close();
-        });
+        })
     }
 
 
-    private static onWebContentsCreated(_e: Event, webContents: WebContents) {
+    private static onWebContentsCreated(e: Event, webContents: WebContents) {
         webContents.setWindowOpenHandler((details: Electron.HandlerDetails) => {
             Main.mainWindow.webContents.send('new-webview-created', details);
 
@@ -138,8 +134,7 @@ export default class Main {
             );
 
         Main.settingWindow.on('ready-to-show', () => {
-            const settings: Settings = Serializer.deserialize();
-            Main.settingWindow.webContents.send('settings', settings);
+            Main.settingWindow.webContents.send('settings', Serializer.deserialize());
         })
 
         Main.settingWindow.on('closed', () => {
