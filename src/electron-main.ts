@@ -12,7 +12,7 @@
 
 import * as path from 'path';
 import getTemplate from './menu';
-import { WebContents, ipcMain } from 'electron';
+import {WebContents, ipcMain} from 'electron';
 import Serializer from "./serializer";
 
 
@@ -26,7 +26,7 @@ export default class Main {
     static application: Electron.App;
     static BrowserWindow: typeof Electron.BrowserWindow;
     static settingWindow: Electron.BrowserWindow;
-    
+
 
     private static onWindowAllClosed(): void {
         if (process.platform !== 'darwin') {
@@ -49,21 +49,12 @@ export default class Main {
             return null;
         }
 
-        if (hasValidDomain(homepage)) {
-            return 'https://' + homepage;
-        }
-
-        return homepage;
+        return hasValidDomain(homepage) ? `https://${homepage}` : homepage;
     }
 
 
     private static handleSettings(settings: Settings): void {
         settings.homepage = Main.prepareURL(settings.homepage);
-
-        /* if the homepage URL is invalid */
-        if (!settings.homepage) {
-            console.error('Homepage URL received from settings is invalid, it will be set to the default engine homepage.');
-        }
 
         Serializer.serialize(settings);
 
@@ -71,8 +62,8 @@ export default class Main {
     }
 
 
-    private static onReady(): void {
-        Main.mainWindow = new Main.BrowserWindow({
+    private static createMainWindow(): Electron.BrowserWindow {
+        const mainWindow = new Main.BrowserWindow({
             width: 1280,
             height: 720,
             webPreferences: {
@@ -82,24 +73,26 @@ export default class Main {
                 preload: path.join(__dirname, 'preload.js')
             }
         })
-        
 
-        Main.mainWindow.loadFile(
-            path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html')
-        )
-        
-        Main.mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.loadFile(path.join(path.join(Main.application.getAppPath(), '..'), 'interface/index.html'));
+
+        mainWindow.webContents.on('did-finish-load', () => {
             Main.mainWindow.webContents.send('browser-settings', Serializer.deserialize());
         })
 
-        Main.mainWindow.on('closed', Main.onClose);
+        mainWindow.on('closed', Main.onClose);
         Main.application.on('web-contents-created', Main.onWebContentsCreated);
 
-        ipcMain.on('cancel-settings', (e) => {
+        return mainWindow;
+    }
+
+
+    private static setupMainWindowIPCHandlers(): void {
+        ipcMain.on('cancel-settings', (_e) => {
             Main.settingWindow.close();
         })
 
-        ipcMain.on('save-settings', (e, settings: Settings) => {
+        ipcMain.on('save-settings', (_e, settings: Settings) => {
             Main.handleSettings(settings);
 
             /* close the window after saving */
@@ -108,12 +101,18 @@ export default class Main {
     }
 
 
-    private static onWebContentsCreated(e: Event, webContents: WebContents) {
+    private static onReady(): void {
+        Main.mainWindow = Main.createMainWindow();
+        Main.setupMainWindowIPCHandlers();
+    }
+
+
+    private static onWebContentsCreated(_e: Event, webContents: WebContents) {
         webContents.setWindowOpenHandler((details: Electron.HandlerDetails) => {
             Main.mainWindow.webContents.send('new-webview-created', details);
 
             // If we would allow, the new tab would be opened in a popup screen
-            return { action: 'deny' }
+            return {action: 'deny'}
         })
     }
 
@@ -129,9 +128,7 @@ export default class Main {
             }
         })
 
-        Main.settingWindow.loadFile(
-            path.join(path.join(Main.application.getAppPath(), '..'), 'interface/settings.html')
-            );
+        Main.settingWindow.loadFile(path.join(path.join(Main.application.getAppPath(), '..'), 'interface/settings.html'));
 
         Main.settingWindow.on('ready-to-show', () => {
             Main.settingWindow.webContents.send('settings', Serializer.deserialize());
@@ -146,8 +143,7 @@ export default class Main {
     static main(app: Electron.App, browserWindow: typeof Electron.BrowserWindow, Menu): void {
         Main.application = app;
         Main.BrowserWindow = browserWindow;
-        
-        // Set the name of the whole application to Nexus (instead of default Electron)
+
         Main.application.setName('Nexus');
         const appName = Main.application.getName();
 

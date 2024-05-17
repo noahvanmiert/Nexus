@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabElements = Array.from(document.querySelectorAll('.tab'));
 
         tabElements.forEach((tabElement, index) => {
-            const tab = tabManager.getTabs()[index];
+            const tab = tabManager.get()[index];
 
             if (tab && tabElement) {
                 // Toggle the 'active' class using the ternary operator
@@ -255,10 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleTabSelect(e: MouseEvent): void {
         const tabElement = e.currentTarget as HTMLElement;
         const tabId = parseInt(tabElement.id);
-        const clickedTab = tabManager.getTabs().find(tab => tab.id === tabId);
+        const clickedTab = tabManager.get().find(tab => tab.id === tabId);
 
         if (clickedTab && !clickedTab.active) {
-            tabManager.activateTab(clickedTab);
+            tabManager.activate(clickedTab);
             updateTabStyles();
             searchInput.value = tabManager.getActive().url;
         }
@@ -271,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const newTabElement = createTabElement(title, tabId);
         tabBar.appendChild(newTabElement);
 
-        const tab = tabManager.addTab(title, url, tabId);
-        tabManager.activateTab(tab);
+        const tab = tabManager.add(title, url, tabId);
+        tabManager.activate(tab);
 
         updateTabStyles();
         createWebview(url, tabId);
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function closeCurrentTab(): void {
-        const tabs = tabManager.getTabs();
+        const tabs = tabManager.get();
         const numTabs = tabs.length;
 
         if (numTabs === 1) {
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             webview.remove();
         }
 
-        tabManager.closeTab(activeTabId); // Close the tab in the TabManager
+        tabManager.close(activeTabId); // Close the tab in the TabManager
         updateTabStyles();
     }
 

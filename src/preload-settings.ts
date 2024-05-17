@@ -10,17 +10,17 @@
 // ====================================
 
 
-import { contextBridge, ipcRenderer } from 'electron';
+import {contextBridge, ipcRenderer} from 'electron';
 
 
 contextBridge.exposeInMainWorld('app', {
-    
+
     send: (channel: string, data: any) => {
         ipcRenderer.send(channel, data);
     },
-    
+
     receive: (channel: string, func: any) => {
-        ipcRenderer.on(channel, (e, ...args) => func(...args));
+        ipcRenderer.on(channel, (_e, ...args) => func(...args));
     }
-    
+
 })

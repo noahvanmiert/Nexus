@@ -20,7 +20,7 @@ class TabManager {
     }
 
 
-    addTab(title: string, url: string, id: number): Tab {
+    add(title: string, url: string, id: number): Tab {
         const tab = new Tab(title, url, id);
         this.tabs.push(tab);
 
@@ -28,7 +28,7 @@ class TabManager {
     }
 
 
-    closeTab(id: number): void {
+    close(id: number): void {
         /* ensure there is more than one tab open */
         if (this.tabs.length <= 1) {
             return;
@@ -39,16 +39,16 @@ class TabManager {
 
         // Check if the tab to be closed is the first tab
         if (index === 0) {
-            this.activateTab(this.tabs[1]);
+            this.activate(this.tabs[1]);
         } else {
-            this.activateTab(this.tabs[index - 1]);
+            this.activate(this.tabs[index - 1]);
         }
 
         this.tabs.splice(index, 1);
     }
 
 
-    getTabs(): Tab[] {
+    get(): Tab[] {
         return this.tabs;
     }
 
@@ -64,7 +64,7 @@ class TabManager {
     }
 
 
-    activateTab(tab: Tab): void {
+    activate(tab: Tab): void {
         tab.activate();
 
         this.tabs.forEach((t) => {
@@ -141,7 +141,7 @@ class TabManager {
 
         /* if this is the not last tab */
         if (tabIndex + 1 !== this.tabs.length) {
-            this.activateTab(this.tabs[tabIndex + 1]);
+            this.activate(this.tabs[tabIndex + 1]);
         }
     }
 
@@ -151,7 +151,7 @@ class TabManager {
 
         /* if this is the not first tab */
         if (index > 0) {
-            this.activateTab(this.tabs[index - 1]);
+            this.activate(this.tabs[index - 1]);
         }
     }
 
@@ -189,11 +189,6 @@ class TabManager {
             return;
         }
 
-        if (webview.isDevToolsOpened()) {
-            webview.closeDevTools();
-            return;
-        }
-
-        webview.openDevTools();
+        webview.isDevToolsOpened() ? webview.closeDevTools() : webview.openDevTools();
     }
 }
