@@ -14,12 +14,12 @@ class TabManager {
     private tabs: Tab[] = [];
     private webViewContainer: HTMLElement;
 
-    
+
     constructor(webviewContainer: HTMLElement) {
         this.webViewContainer = webviewContainer;
     }
 
-    
+
     addTab(title: string, url: string, id: number): Tab {
         const tab = new Tab(title, url, id);
         this.tabs.push(tab);
@@ -27,32 +27,32 @@ class TabManager {
         return tab;
     }
 
-    
+
     closeTab(id: number): void {
-        // Ensure there is more than one tab open
+        /* ensure there is more than one tab open */
         if (this.tabs.length <= 1) {
             return;
         }
 
-        // find if the tab with id is at index zero or not and do different things then
-        const tabIndex = this.tabs.findIndex(tab => tab.id === id);
+        /* find if the tab with id is at index zero or not and do different things then */
+        const index = this.tabs.findIndex(tab => tab.id === id);
 
         // Check if the tab to be closed is the first tab
-        if (tabIndex === 0) {
+        if (index === 0) {
             this.activateTab(this.tabs[1]);
         } else {
-            this.activateTab(this.tabs[tabIndex - 1]);
+            this.activateTab(this.tabs[index - 1]);
         }
 
-        this.tabs.splice(tabIndex, 1);
+        this.tabs.splice(index, 1);
     }
 
-    
+
     getTabs(): Tab[] {
         return this.tabs;
     }
 
-    
+
     getActive(): Tab {
         for (const tab of this.tabs) {
             if (tab.active) {
@@ -63,49 +63,58 @@ class TabManager {
         return null;
     }
 
-    
+
     activateTab(tab: Tab): void {
         tab.activate();
-        
+
         this.tabs.forEach((t) => {
             if (t !== tab) {
                 t.deactivate();
             }
         })
 
-        // Update the content of the webview based on the selected tab's state
+        this.hideAllWebviews();
+        this.showActiveWebview();
+    }
+
+
+    private hideAllWebviews(): void {
         const webviews: NodeListOf<HTMLElement> = this.webViewContainer.querySelectorAll('webview');
 
-        // hide all the webviews
         webviews.forEach(view => {
             view.style.display = 'none';
-        });
+        })
+    }
 
-        const activeWebview: HTMLElement = this.webViewContainer.querySelector(`#webview-${this.getActive().id}`);
+
+    private showActiveWebview(): void {
+        const webviewId = `#webview-${this.getActive().id}`;
+        const activeWebview: HTMLElement = this.webViewContainer.querySelector(webviewId);
+
         if (activeWebview) {
             activeWebview.style.display = '';
         }
     }
 
-    
+
     setActiveURL(url: string): void {
         this.getActive().url = url;
     }
-    
+
 
     setActiveTitle(title: string): void {
         this.getActive().title = title;
     }
-    
+
 
     updateHTMLTabTitle(title: string): void {
         const tabElement = document.getElementById(this.getActive().id.toString());
-        
+
         if (!tabElement) {
             console.error('Could not get HTML element of current tab');
             return;
         }
-        
+
         tabElement.textContent = title;
     }
 
@@ -130,7 +139,7 @@ class TabManager {
     goToNext(): void {
         const tabIndex = this.tabs.findIndex(tab => tab.active === true);
 
-        // if this is the not last tab
+        /* if this is the not last tab */
         if (tabIndex + 1 !== this.tabs.length) {
             this.activateTab(this.tabs[tabIndex + 1]);
         }
@@ -138,11 +147,11 @@ class TabManager {
 
 
     goToPrevious(): void {
-        const tabIndex = this.tabs.findIndex(tab => tab.active === true);
+        const index = this.tabs.findIndex(tab => tab.active === true);
 
-        // if this is the not first tab
-        if (tabIndex > 0) {
-            this.activateTab(this.tabs[tabIndex - 1]);
+        /* if this is the not first tab */
+        if (index > 0) {
+            this.activateTab(this.tabs[index - 1]);
         }
     }
 
@@ -182,8 +191,9 @@ class TabManager {
 
         if (webview.isDevToolsOpened()) {
             webview.closeDevTools();
-        } else {
-            webview.openDevTools();
+            return;
         }
+
+        webview.openDevTools();
     }
 }
