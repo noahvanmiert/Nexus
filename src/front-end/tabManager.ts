@@ -129,7 +129,7 @@ class TabManager {
             return;
         }
 
-        tabElement.textContent = title;
+        tabElement.innerText = title;
     }
 
 
@@ -258,5 +258,30 @@ class TabManager {
         const defaultZoomFactor = 1.0; // 100%
         this.getActiveWebview().setZoomFactor(defaultZoomFactor);
         this.updateZoomDisplay();
+    }
+
+
+    toggleMute(): void {
+        const webview = this.getActiveWebview();
+        const tabElement = document.getElementById(this.getActive().id.toString());
+
+        if (!tabElement) {
+            console.error('Could not get HTML element of current tab');
+            return;
+        }
+
+        if (!webview) {
+            return;
+        }
+
+
+        if (webview.isAudioMuted()) {
+            webview.setAudioMuted(false);
+            tabElement.style.fontStyle = '';
+            return;
+        }
+
+        webview.setAudioMuted(true);
+        tabElement.style.fontStyle = 'italic';
     }
 }

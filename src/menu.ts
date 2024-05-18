@@ -173,6 +173,13 @@ const getTemplate = (appName: string) => {
                     click: () => {
                         send('go-forward');
                     }
+                },
+                {
+                    label: 'Toggle Mute',
+                    accelerator: 'CmdOrCtrl+M',
+                    click: () => {
+                        send('toggle-mute');
+                    }
                 }
             ]
         }

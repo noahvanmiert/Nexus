@@ -152,6 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    // @ts-ignore
+    app.receive('toggle-mute', () => {
+        tabManager.toggleMute();
+    })
+
+
     function handleSearch(url: string = ''): void {
         let searchTerm = url || searchInput.value.trim();
 

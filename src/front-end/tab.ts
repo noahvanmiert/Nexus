@@ -11,14 +11,25 @@
 
 
 class Tab {
+    public title: string;
+    public url: string;
+    public id: number;
 
-    constructor(public title: string, public url: string, public id: number, public active: boolean = false, public zoomFactor: number = 1) {
+    public active: boolean = false;
+    public zoomFactor: number = 1;
 
+
+    constructor(title: string, url: string, id: number) {
+        this.title = title;
+        this.url = url;
+        this.id = id;
     }
+
 
     activate() {
         this.active = true;
     }
+
 
     deactivate() {
         this.active = false;
