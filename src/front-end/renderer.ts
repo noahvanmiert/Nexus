@@ -140,6 +140,18 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    // @ts-ignore
+    app.receive('zoom-in', () => {
+        tabManager.zoomIn();
+    })
+
+
+    // @ts-ignore
+    app.receive('zoom-out', () => {
+        tabManager.zoomOut();
+    })
+
+
     function handleSearch(url: string = ''): void {
         let searchTerm = url || searchInput.value.trim();
 
@@ -204,13 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function handleDomReady(this: Electron.WebviewTag): void {
-        try {
-            const title = this.getTitle() || '';
-            tabManager.setActiveTitle(title);
-            tabManager.updateHTMLTabTitle(title);
-        } catch (err) {
-            console.error(`An error occured while retrieving tab title: ${err}`);
-        }
+        tabManager.resetZoomFactor();
+
+        const title = this.getTitle() || '';
+        tabManager.setActiveTitle(title);
+        tabManager.updateHTMLTabTitle(title);
     }
 
 

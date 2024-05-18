@@ -10,8 +10,14 @@
 // ====================================
 
 
-import { BrowserWindow } from 'electron';
+import {BrowserWindow} from 'electron';
 import Main from './electron-main'
+
+
+function send(channel: string, ...args: any[]): void {
+    const mainWindow = BrowserWindow.getAllWindows()[0];
+    mainWindow.webContents.send(channel, ...args);
+}
 
 
 const getTemplate = (appName: string) => {
@@ -72,48 +78,42 @@ const getTemplate = (appName: string) => {
                     label: 'New Tab',
                     accelerator: 'CmdOrCtrl+T',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('new-tab');
+                        send('new-tab');
                     }
                 },
                 {
                     label: 'Close Tab',
                     accelerator: 'CmdOrCtrl+W',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('close-tab');
+                        send('close-tab');
                     }
                 },
                 {
                     label: 'Reload',
                     accelerator: 'CmdOrCtrl+R',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('reload-tab');
+                        send('reload-tab');
                     }
                 },
                 {
                     label: 'Next Tab',
                     accelerator: 'CmdOrCtrl+2',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('next-tab');
+                        send('next-tab');
                     }
                 },
                 {
                     label: 'Previous Tab',
                     accelerator: 'CmdOrCtrl+1',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('previous-tab');
+                        send('previous-tab');
                     }
                 },
                 {
                     label: 'Developer Tools',
                     accelerator: 'CmdOrCtrl+I',
                     click: () => {
-                       const mainWindow = BrowserWindow.getAllWindows()[0];
-                       mainWindow.webContents.send('dev-tools');
+                        send('dev-tools');
                     }
                 }
             ]
@@ -139,22 +139,39 @@ const getTemplate = (appName: string) => {
             ]
         },
         {
+            label: 'View',
+            submenu: [
+                {
+                    label: 'Zoom In',
+                    accelerator: 'CmdOrCtrl+=',
+                    click: () => {
+                        send('zoom-in');
+                    }
+                },
+                {
+                    label: 'Zoom Out',
+                    accelerator: 'CmdOrCtrl+-',
+                    click: () => {
+                        send('zoom-out');
+                    }
+                }
+            ]
+        },
+        {
             label: 'Tab',
             submenu: [
                 {
                     label: 'Go Back',
                     accelerator: 'CmdOrCtrl+[',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('go-back');
+                        send('go-back');
                     }
                 },
                 {
                     label: 'Go Forward',
                     accelerator: 'CmdOrCtrl+]',
                     click: () => {
-                        const mainWindow = BrowserWindow.getAllWindows()[0];
-                        mainWindow.webContents.send('go-forward');
+                        send('go-forward');
                     }
                 }
             ]

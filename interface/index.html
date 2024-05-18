@@ -10,36 +10,37 @@
     <title>Nexus</title>
 </head>
 <body>
-    <div id="tab-bar">
-        <!-- Tab elements will be inserted here -->
+<div id="tab-bar">
+    <!-- Tab elements will be inserted here -->
+</div>
+
+<div id="search-bar">
+    <div id='action-icons'>
+        <i id='go-back-icon' class="bi bi-arrow-left"></i>
+        <i id='go-forward-icon' class="bi bi-arrow-right"></i>
+        <i id='reload-icon' class="bi bi-arrow-clockwise"></i>
     </div>
 
-    <div id="search-bar">
-        <div id='action-icons'>
-            <i id='go-back-icon' class="bi bi-arrow-left"></i>
-            <i id='go-forward-icon' class="bi bi-arrow-right"></i>
-            <i id='reload-icon' class="bi bi-arrow-clockwise"></i>
-        </div>
+    <input type="text" id="search-input" placeholder="Enter website URL or search term">
 
-        <input type="text" id="search-input" placeholder="Enter website URL or search term">
+    <p id='zoom-level'></p>
+    <i id='home-icon' class="bi bi-house"></i>
+</div>
 
-        <i id='home-icon' class="bi bi-house"></i>
-    </div>
+<div id="webview-container">
+    <!-- Webview will be inserted here -->
+</div>
 
-    <div id="webview-container">
-        <!-- Webview will be inserted here -->
-    </div>
+<!-- If the website can't be loaded -->
+<div id="error-container" style="display: none;">
 
-    <!-- If the website can't be loaded -->
-    <div id="error-container" style="display: none;">
-        
-    </div>
+</div>
 
-    <!-- Script are included here -->
-    <script src='../build/front-end/renderer.js'></script>
-    <script src='../build/front-end/tab.js'></script>
-    <script src='../build/front-end/tabManager.js'></script>
-    <script src='../build/front-end/utils.js'></script>
-    <script src='../build/front-end/defaults.js'></script>
+<!-- Script are included here -->
+<script src='../build/front-end/renderer.js'></script>
+<script src='../build/front-end/tab.js'></script>
+<script src='../build/front-end/tabManager.js'></script>
+<script src='../build/front-end/utils.js'></script>
+<script src='../build/front-end/defaults.js'></script>
 </body>
 </html>

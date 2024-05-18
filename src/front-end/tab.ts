@@ -12,8 +12,8 @@
 
 class Tab {
 
-    constructor(public title: string, public url: string, public id: number, public active: boolean = false) {
-        
+    constructor(public title: string, public url: string, public id: number, public active: boolean = false, public zoomFactor: number = 1) {
+
     }
 
     activate() {

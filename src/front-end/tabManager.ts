@@ -17,6 +17,8 @@ class TabManager {
 
     constructor(webviewContainer: HTMLElement) {
         this.webViewContainer = webviewContainer;
+
+        this.getZoomFactorHTMLElement().style.display = 'none';
     }
 
 
@@ -75,6 +77,18 @@ class TabManager {
 
         this.hideAllWebviews();
         this.showActiveWebview();
+
+        const zoomFactor = this.getActive().zoomFactor;
+        const zoomFactorPercentage = (100 * zoomFactor).toFixed(0);
+        const zoomFactorElement = this.getZoomFactorHTMLElement();
+
+        if (zoomFactor !== 1) {
+            zoomFactorElement.innerText = zoomFactorPercentage + '%';
+            zoomFactorElement.style.display = '';
+        } else {
+            zoomFactorElement.style.display = 'none';
+        }
+
     }
 
 
@@ -190,5 +204,59 @@ class TabManager {
         }
 
         webview.isDevToolsOpened() ? webview.closeDevTools() : webview.openDevTools();
+    }
+
+
+    getZoomFactorHTMLElement(): HTMLElement {
+        return document.getElementById('zoom-level');
+    }
+
+
+    private updateZoomDisplay(): void {
+        const zoomElement = this.getZoomFactorHTMLElement();
+        const zoomPercentage = (100 * this.getActiveWebview().getZoomFactor()).toFixed(0);
+
+        if (parseInt(zoomPercentage) === 100) {
+            zoomElement.style.display = 'none';
+            return;
+        }
+
+        zoomElement.innerText = zoomPercentage + '%';
+        zoomElement.style.display = '';
+    }
+
+
+    private changeZoom(factor: number): void {
+        const webview: Electron.WebviewTag = this.getActiveWebview();
+
+        if (!webview) {
+            return;
+        }
+
+        const currentFactor: number = webview.getZoomFactor();
+        let newZoomFactor = Math.round((currentFactor + factor) * 10) / 10;
+        webview.setZoomFactor(newZoomFactor);
+
+        this.getActive().zoomFactor = newZoomFactor;
+
+        this.updateZoomDisplay();
+    }
+
+    zoomIn(): void {
+        /* zoom 10% in */
+        this.changeZoom(0.1);
+    }
+
+
+    zoomOut(): void {
+        /* zoom 10% out */
+        this.changeZoom(-0.1);
+    }
+
+
+    resetZoomFactor(): void {
+        const defaultZoomFactor = 1.0; // 100%
+        this.getActiveWebview().setZoomFactor(defaultZoomFactor);
+        this.updateZoomDisplay();
     }
 }
