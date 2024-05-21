@@ -142,6 +142,16 @@ const getTemplate = (appName: string) => {
             label: 'View',
             submenu: [
                 {
+                    label: 'Toggle Search bar',
+                    accelerator: 'CmdOrCtrl+Shift+F',
+                    click: () => {
+                        send('toggle-bar');
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
                     label: 'Zoom In',
                     accelerator: 'CmdOrCtrl+=',
                     click: () => {

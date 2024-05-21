@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabManager = new TabManager(webviewContainer);
 
     let firstLoad = true;
+    let headerActive = true;
 
 
     // @ts-ignore
@@ -155,6 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // @ts-ignore
     app.receive('toggle-mute', () => {
         tabManager.toggleMute();
+    })
+
+
+    // @ts-ignore
+    app.receive('toggle-bar', () => {
+        toggleSearchBar();
     })
 
 
@@ -357,5 +364,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showActiveWebview(): void {
         tabManager.getActiveWebview().style.display = '';
+    }
+
+
+    function toggleSearchBar(): void {
+        const headerElement = document.getElementById('header');
+
+        if (!headerElement) {
+            return;
+        }
+
+        if (headerActive) {
+            headerElement.style.display = 'none';
+            headerActive = false;
+        } else {
+            headerElement.style.display = '';
+            headerActive = true;
+        }
     }
 })
